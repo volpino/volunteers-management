@@ -84,11 +84,11 @@ def profile(request):
         qset = (Q(active=True))
         ems = all_ems.filter(qset)
         if ems:
-            HttpResponseRedirect("/events/overview/")
+            return HttpResponseRedirect("/events/overview/")
         else:
-            HttpResponseRedirect("/emergencies/create/")
+            return HttpResponseRedirect("/emergencies/create/")
     elif member:
-        HttpResponseRedirect("/events/myevents/")
+        return HttpResponseRedirect("/events/myevents/")
     elif volunteer:
         qset = (Q(active=True))
         active_ems = Emergency.objects.filter(qset)
@@ -96,12 +96,13 @@ def profile(request):
         vol = Volunteer.objects.filter(qset)
         for em in active_ems:
             if vol in em.volunteers:
-                HttpResponseRedirect("/events/mytasks/")
-        HttpResponseRedirect("/emergencies/overview/")
+                return HttpResponseRedirect("/events/mytasks/")
+        return HttpResponseRedirect("/emergencies/overview/")
     elif request.method == "POST":
         form = VolunteerInfoForm(request.POST)
         if form.is_valid():
             form.save_volunteer(user)
+            return HttpResponseRedirect("/")
     else:
         form = VolunteerInfoForm()
 
@@ -116,6 +117,7 @@ def profile(request):
 #    organization -> se ha emergenza aperta: events/overview/
 #                    altrimenti: emergencies/create/
 
+@login_required
 def new_event(request):
     user = request.user
     qset = (Q(user__exact=user))
@@ -125,6 +127,7 @@ def new_event(request):
         form = f(request.POST)
         if form.is_valid():
             form.save_event()
+            return HttpRedirectResponse("/")
     else:
         form = f()
     return render_to_response("events/create.html", locals(),
@@ -133,8 +136,13 @@ def new_event(request):
 def event_desc(request):
     pass
 
+@login_required
 def my_events(request):
-    pass
+    user = request.user
+    qset = (Q(user__exact=user))
+    member = Member.objects.filter(qset)[0]
+    evs = Events.objects.filter(member=member)
+    return render_to_response("events/my_events.html", locals())
 
 def event_overview(request):
     pass

@@ -137,6 +137,7 @@ def create_event_form(member):
                            min_skill=self.cleaned_data["min_skill"],
                            needed_people=self.cleaned_data["needed_people"],
                            priority=self.cleaned_data["priority"],
+                           start_date="2011-01-01",
                            end_date=self.cleaned_data["end_date"],
                            lat=self.cleaned_data["lat"],
                            lon=self.cleaned_data["lon"],
