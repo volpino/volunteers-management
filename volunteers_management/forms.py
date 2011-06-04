@@ -48,10 +48,9 @@ class VolunteerInfoForm(forms.Form):
     social = forms.ChoiceField(choices=SKILLS_CHOICES,
                                label="Social skills",
                                required=True)
-    lat = forms.FloatField("Home city latitude", widget=forms.HiddenInput(),
-                           required=True)
-    lon = forms.FloatField("Home city longitude", widget=forms.HiddenInput(),
-                           required=True)
+    location = forms.CharField(label="Location place (*)")
+    lat = forms.FloatField(label="Location latitude", required=True)
+    lon = forms.FloatField(label="Location longitude", required=True)
 
     def save_volunteer(self, user):
         u = user
@@ -81,8 +80,9 @@ class NewEmergencyForm(forms.Form):
                                        required=True)
     end_date = forms.DateField(label="Estimated deadline",
                                required=False)
-    lat = forms.FloatField("Emergency latitude", required=True)
-    lon = forms.FloatField("Emergency longitude", required=True)
+    location = forms.CharField(label="Emergency place (*)")
+    lat = forms.FloatField(label="Emergency latitude", required=True)
+    lon = forms.FloatField(label="Emergency longitude", required=True)
 
     def save_emergency(self, user):
         #Quando checko che user sia in effetti un'organization

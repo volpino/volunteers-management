@@ -22,7 +22,7 @@ def about(request):
         volunteer = is_volunteer(user)
         member = is_member(user)
         organization = is_organization(user)
-    return render_to_response("about.html")
+    return render_to_response("about.html", locals())
 
 def contact(request):
     user = request.user
@@ -33,7 +33,7 @@ def contact(request):
         volunteer = is_volunteer(user)
         member = is_member(user)
         organization = is_organization(user)
-    return render_to_response("contact.html")
+    return render_to_response("contact.html", locals())
 
 def is_member(user):
     qset = (Q(user__exact=user))
@@ -71,7 +71,7 @@ def profile(request):
     emergency_list = Emergency.objects.filter(active=True)
     if organization or member or volunteer:
         for em in emergency_list:
-            if vol in em.volunteers:
+            if vol in em.volunteers.all():
                 emergency = em
                 break
         return render_to_response("home.html", locals())

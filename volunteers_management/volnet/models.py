@@ -50,9 +50,9 @@ class Emergency(models.Model):
     description = models.TextField("Description")
     needed_people = models.IntegerField("Estimated needed people")
     notified_volunteers = models.ManyToManyField(Volunteer,
-                          related_name="notified_emergency")
+                          related_name="notified_emergency", blank=True)
     volunteers = models.ManyToManyField(Volunteer,
-                 related_name="emergency_volunteers")
+                 related_name="emergency_volunteers", blank=True)
     start_date = models.DateField("Start date")
     end_date = models.DateField("End date")
     lat = models.FloatField("Latitude")
@@ -66,7 +66,7 @@ class Event(models.Model):
     member = models.ForeignKey(Member)
     emergency = models.ForeignKey(Emergency)
     volunteers = models.ManyToManyField(Volunteer,
-                 related_name="event_volunteers")
+                 related_name="event_volunteers", blank=True)
     name = models.CharField("Name", max_length=100)
     description = models.TextField("Description")
     skill_type = models.CharField("Skills type required", max_length=1,

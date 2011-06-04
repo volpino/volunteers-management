@@ -23,5 +23,5 @@ urlpatterns = patterns('',
     url(r'^contact/$', contact),
     url(r'^about/$', about),
     url(r'^emergencies/create/$', new_emergency),
-
+    url(r'^facebook/', include('facebookconnect.urls')),
 )

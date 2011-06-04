@@ -5,11 +5,12 @@ Volunteer information
 {% endblock %}
 
 {% block content %}
+
 <p>Please add your data:</p>
     <form action="." method="POST">
         {{ form.as_p }}
-        <p><input type="text" id="city" /></p>
         <p><input type="submit" value="Submit"></p>
+        <p><b>(*) This field is useful only to fill latitude and longitude fields</b></p>
         {% csrf_token %}
     </form>
 </div>
@@ -54,10 +55,7 @@ function attachAutoComplete(expression) {
  });
 }
 
-
-attachAutoComplete("#city");
-
+attachAutoComplete("#id_location");
 </script>
-
 
 {% endblock %}
