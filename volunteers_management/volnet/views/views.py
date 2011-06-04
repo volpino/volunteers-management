@@ -12,7 +12,7 @@ def home(request):
     user = request.user
     if user.is_authenticated():
         return HttpResponseRedirect("/accounts/profile/")
-    return render_to_response("base.html")
+    return HttpResponseRedirect("/emergencies/overview/")
 #dalla home (cioe`:da profiles): redirects
 #    imbecille -> emergencies/overview/
 #    volontario -> se enroled: events/mytask/
