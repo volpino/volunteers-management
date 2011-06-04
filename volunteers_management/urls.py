@@ -1,4 +1,5 @@
 from django.conf.urls.defaults import patterns, include, url
+from volnet.views import *
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -16,4 +17,5 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
 
     url(r'^accounts/', include('registration.backends.default.urls')),
+    url(r'^accounts/profile/$)', profile),
 )
