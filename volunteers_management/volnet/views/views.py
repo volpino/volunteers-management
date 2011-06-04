@@ -127,8 +127,7 @@ def new_event(request):
             form.save_event()
     else:
         form = f()
-    return render_to_response("events/create.html", locals(),
-                              context_instance=RequestContext(request))
+    return render_to_response("events/create.html", locals())
 
 def event_desc(request):
     pass
@@ -149,7 +148,11 @@ def emergency_manage(request):
     pass
 
 def emergency_overview(request):
-    pass
+    ems_open = Emergency.object.filter(Q(active=True))
+    ems_closed = Emergency.object.filter(Q(active=False))
+    return render_to_response("events/create.html", locals(),
+                              context_instance=RequestContext(request))
+
 
 def emergency_join(request):
     pass
