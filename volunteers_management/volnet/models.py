@@ -26,6 +26,9 @@ class Volunteer(models.Model):
     social_skill = IntegerRangeField("Social skills", min_value=0, max_value=5)
     available = models.BooleanField("Availability")
 
+    def __unicode__(self):
+        return self.user.username
+
 class VolunteerComment(models.Model):
     volunteer = models.ForeignKey(Volunteer)
     text = models.TextField("Text")
@@ -34,6 +37,9 @@ class VolunteerComment(models.Model):
 class Organization(models.Model):
     user = models.OneToOneField(User, unique=True)
     name = models.CharField("Organization name", max_length=100)
+
+    def __unicode__(self):
+        return self.name
 
 class Member(Volunteer):
     organization = models.ForeignKey(Organization)
@@ -52,6 +58,9 @@ class Emergency(models.Model):
     lat = models.FloatField("Latitude")
     lon = models.FloatField("Longitude")
     active = models.BooleanField("Active")
+
+    def __unicode__(self):
+        return self.name
 
 class Event(models.Model):
     member = models.ForeignKey(Member)

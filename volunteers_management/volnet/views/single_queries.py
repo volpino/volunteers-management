@@ -1,5 +1,5 @@
 from django.shortcuts import render_to_response
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseForbidden
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from volnet.models import *
@@ -10,10 +10,10 @@ def emergency(request):
     user = request.user
     organization = is_organization(user)
     member = is_member(user)
-    volunteer = is_volunteer(user):
+    volunteer = is_volunteer(user)
     em = None
     enroled = False
-    
+
     query = request.GET.get("emergency")
     if query:
         em = Emergency.get(pk=query)
@@ -43,8 +43,8 @@ def new_emergency(request):
             if form.is_valid():
                 form.save_emergency(user)
         else:
-            form = VolunteerInfoForm()
-        return render_to_response("new_emergency.html", locals(),
+            form = NewEmergencyForm()
+        return render_to_response("emergencies/create.html", locals(),
                                   context_instance=RequestContext(request))
-
+    return HttpResponseForbidden()
 

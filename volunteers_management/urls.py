@@ -22,4 +22,6 @@ urlpatterns = patterns('',
     url(r'^accounts/profile/$', profile),
     url(r'^contact/$', contact),
     url(r'^about/$', about),
+    url(r'^emergencies/create/$', new_emergency),
+
 )

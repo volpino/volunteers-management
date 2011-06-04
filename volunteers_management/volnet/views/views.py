@@ -11,7 +11,7 @@ def home(request):
     user = request.user
     if user.is_authenticated():
         return HttpResponseRedirect("/accounts/profile/")
-    return render_to_response("index.html")
+    return render_to_response("base.html")
 
 def about(request):
     user = request.user
