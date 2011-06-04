@@ -3,5 +3,9 @@
 Events overview
 {% endblock %}
 {% block content %}
-This is the content
+<ul>
+    {% for %}
+    <li><a href=/events/overview.html?id={#.pk}>{emerg.name}</a></li>
+    {% endfor %}
+</ul>
 {% endblock %}

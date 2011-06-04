@@ -3,5 +3,9 @@
 Emergencies
 {% endblock %}
 {% block content %}
-This is the content.
+<ul>
+    {% for emerg in ems %}
+    <li><a href=/emergencies/desc.html/?id={emerg.pk}>{emerg.name}</a></li>
+    {% endfor %}
+</ul>
 {% endblock %}
