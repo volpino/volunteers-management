@@ -42,7 +42,7 @@ def profile(request):
     user = request.user
     organization = is_organization(user)
     member = is_member(user)
-    volunteer = is_volunteer(user):
+    volunteer = is_volunteer(user)
     if organization or member or volunteer:
         render_to_response("home.html", locals())
     if request.method == "POST":
