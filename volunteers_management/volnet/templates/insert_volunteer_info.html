@@ -1,5 +1,36 @@
 {% extends "base.html" %}
+<script type="text/javascript" src="/static/jquery-1.5.js"></script>
+<script type="text/javascript" src="/static/jquery.autocomplete.min.js"></script>
+<script type="text/javascript">
+function attachAutoComplete(expression) {
+ $(expression).unautocomplete();
+alert(1);
+ $(expression).autocomplete("http://nominatim.openstreetmap.org/search/",  {
+    dataType: "jsonp",
+    parse: function(data) {
+      var rows = new Array();
+      for (var i = 0; i < data.length; i++){
+        rows[i] = { data: {lat: data[i].lat, lon: data[i].lon}
+                    value: data[i].display_name,
+                    result: data[i].display_name };
+      }
+      return rows;
+    },
+    formatItem: function(row) { return row; },
+    extraParams: {
+      action: "opensearch",
+      format: "json",
+      q: function () { return $(expression).val() } },
+    max: 10
+ });
+ $(expression).result(function() {  });
+}
 
+$(document).ready(function (){
+    attachAutoComplete("#city");
+});
+</script>
+<link rel="stylesheet" href="/static/jquery.autocomplete.css"/>
 {% block content_title %}
 Volunteer information
 {% endblock %}
@@ -8,6 +39,7 @@ Volunteer information
 <p>Please add your data:</p>
     <form action="." method="POST">
         {{ form.as_p }}
+        <p><input type="text" id="city" /></p>
         <p><input type="submit" value="Submit"></p>
         {% csrf_token %}
     </form>

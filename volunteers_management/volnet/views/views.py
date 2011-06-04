@@ -13,6 +13,28 @@ def home(request):
         return HttpResponseRedirect("/accounts/profile/")
     return render_to_response("index.html")
 
+def about(request):
+    user = request.user
+    volunteer = None
+    member = None
+    organization = None
+    if user.is_authenticated():
+        volunteer = is_volunteer(user)
+        member = is_member(user)
+        organization = is_organization(user)
+    return render_to_response("about.html")
+
+def contact(request):
+    user = request.user
+    volunteer = None
+    member = None
+    organization = None
+    if user.is_authenticated():
+        volunteer = is_volunteer(user)
+        member = is_member(user)
+        organization = is_organization(user)
+    return render_to_response("contact.html")
+
 def is_member(user):
     qset = (Q(user__exact=user))
     member = Member.objects.filter(qset)
@@ -43,8 +65,16 @@ def profile(request):
     organization = is_organization(user)
     member = is_member(user)
     volunteer = is_volunteer(user)
+    qset = (Q(user__exact=user))
+    vol = Volunteer.objects.filter(qset)
+    emergency = None
+    emergency_list = Emergency.objects.filter(active=True)
     if organization or member or volunteer:
-        render_to_response("home.html", locals())
+        for em in emergency_list:
+            if vol in em.volunteers:
+                emergency = em
+                break
+        return render_to_response("home.html", locals())
     if request.method == "POST":
         form = VolunteerInfoForm(request.POST)
         if form.is_valid():

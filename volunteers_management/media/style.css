@@ -154,7 +154,7 @@ a:hover {
 
 #menu {
 	float: right;
-	width: 700px;
+	width: 600px;
 }
 
 #menu ul {
@@ -354,4 +354,24 @@ a:hover {
 
 #footer a {
 	color: #6B4A45;
+}
+
+form p label {
+    display: block;
+    float: left;
+    min-width: 200px;
+    padding: 0;
+    margin: 5px 0 0;
+    text-align: left;
+    vertical-align: middle;
+}
+
+.errorlist {
+    background: url("/static/images/alert.png") no-repeat scroll 5px 0.3em red;
+    border: 1px solid ;
+    color: white;
+    display: block;
+    font-size: 12px !important;
+    margin: 20px;
+    padding: 4px 5px 4px 25px;
 }
