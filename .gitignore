@@ -2,3 +2,5 @@
 *.db
 *_local.py
 *.swp
+*~
+#*
