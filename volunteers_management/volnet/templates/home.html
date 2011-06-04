@@ -5,46 +5,14 @@ WELCOME!
 {% endblock %}
 
 {% block content %}
+{% if organization %}<!-->content displayed to organizations account<-->
 This is the content
+{% else %}{% if member %}<!-->content displayed to members account<-->
+This is the content
+{% else %}{% if volunteer%}<!-->content displayed to volunteers account<-->
+This is the content
+{% else %}<!-->content displayed to non logged users<-->
+This is the content
+{% endif %}{% endif %}{% endif %}
 {% endblock %}
 
-{% block menu %}
-{%if organization %}
-   <li><a href="/accounts/manage">Edit Account</a></li>
-   <li><a href="/accounts/logout">Logout</a></li>
-{%else%}
-{%if member%}
-   <li><a href="/accounts/manage">Edit Account</a></li>
-   <li><a href="/accounts/logout">Logout</a></li>
-{%else%}
-{%if volunteer%}
-   <li><a href="/accounts/manage">Edit Account</a></li>
-   <li><a href="/accounts/logout">Logout</a></li>
-
-{%endif%}{%endif%}{%endif%}
-
-{% endblock %}
-
-{% block sidebar %}
-<ul>
-
-{%if organization %}
-    <li><a href="/emergencies/">Emergencies</a></li>
-    <li><a href="/emergencies/open">Open Emergencies</a></li>
-    <li><a href="/emergencies/create">Create Emergency</a></li>
-    <li><a href="/emergencies/manage">Manage Emergencies</a></li>
-    <li><a href="/members/manage">Manage Members</a></li>
-{%else%}
-{%if member%}
-    <li><a href="/emergencies/overview">Emergencies</a></li>
-    <li><a href="/events/overview">Open Tasks</a></li>
-    <li><a href="/events/create">Create Tasks</a></li>
-{%else%}
-{%if volunteer%}
-   <li><a href="/emergencies/overview">Emergencies</a></li>
-    <li><a href="/tasks">Task</a></li>
-
-{%endif%}{%endif%}{%endif%}
-</ul>
-
-{% endblock %}
