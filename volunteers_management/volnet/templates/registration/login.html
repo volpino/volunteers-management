@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content_title %}
+Login
+{% endblock %}
+
+{% block content %}
+
+{% if form.errors %}
+<p class="errorlist">Your username and password didn't match or your account is not active.<br/>
+Please try again.</p>
+{% endif %}
+
+<form class="login" method="post" action="{% url django.contrib.auth.views.login %}">
+<p>
+  {{ form.username.label_tag }}
+  {{ form.username }}
+</p>
+<p>
+  {{ form.password.label_tag }}
+  {{ form.password }}
+</p>
+
+<input type="submit" value="Login" />
+<input type="hidden" name="next" value="{{ next }}" />
+</form>
+
+<div id="other_login">
+    <a href="/accounts/register/" />Sign up</a>
+    <a href="/accounts/password_reset/" />Reset password</a>
+</div>
+{% endblock %}

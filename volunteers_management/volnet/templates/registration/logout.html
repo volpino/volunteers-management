@@ -1,0 +1,11 @@
+{% extends "index_sidebar.html" %}
+{% load i18n %}
+
+{% block content_title %}
+    Logout
+{% endblock %}
+
+{% block content %}
+<p>{% trans "Logged out" %}. You'll be redirected to the homepage within 2 seconds...</p>
+<script>redirect_home();</script>
+{% endblock %}

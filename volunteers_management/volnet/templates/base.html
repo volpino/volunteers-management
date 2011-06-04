@@ -1,11 +1,55 @@
-<html>
-    <head>
-        <title>Volunteers Management</title>
-        <meta name="generator" content="vim" />
-        <meta name="author" content="Salted Crackers"/>
-    </head>
-   <body>
-        <p>WELCOME!</p>
-   </body>
-</html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!--
+Design by Free CSS Templates
+http://www.freecsstemplates.org
+Released for free under a Creative Commons Attribution 2.5 License
 
+Name       : Perfect Blemish
+Description: A two-column, fixed-width design with dark color scheme.
+Version    : 1.0
+Released   : 20100729
+
+-->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<title>Volunteers Management</title>
+<link href="/static/style.css" rel="stylesheet" type="text/css" media="screen" />
+</head>
+<body>
+<div id="wrapper">
+	<div id="header-wrapper">
+		<div id="header">
+			<div id="logo">
+				<h1><a href="#"><span>Volunteers</span>Management</a></h1>
+			</div>
+			<div id="menu">
+                {% block menu %}
+                {% endblock %}
+			</div>
+		</div>
+	</div>
+	<!-- end #header -->
+	<div id="page">
+        <div id="content">
+            {% block content %}
+            {% endblock %}
+		</div>
+		<!-- end #content -->
+		<div id="sidebar">
+            {% block sidebar %}
+            {% endblock %}
+		</div>
+		<!-- end #sidebar -->
+		<div style="clear: both;">&nbsp;</div>
+	</div>
+	<!-- end #page -->
+</div>
+<div id="footer">
+	<p>Copyright (c) 2008 Sitename.com. All rights reserved. Design by <a href="http://www.freecsstemplates.org/"> CSS Templates</a>.</p>
+</div>
+<!-- end #footer -->
+</body>
+</html>
