@@ -30,8 +30,12 @@ Released   : 20100729
                     <li><a href="/">Home</a></li>
                     <li><a href="/about/">About</a></li>
                     <li><a href="/contact/">Contact us</a></li>
-                    {% block menu %}
-                    {% endblock %}
+                    {% if organization or member or volunteer %}
+                    <li><a href="/accounts/manage">Edit Account</a></li>
+                    <li><a href="/accounts/logout">Logout</a></li>
+                    {% else %}
+                    <li><a href="/accounts/login">Login</a></li>
+                    {% endif %}
                 </ul>
 			</div>
 		</div>
@@ -47,8 +51,31 @@ Released   : 20100729
 		</div>
 		<!-- end #content -->
 		<div id="sidebar">
-            {% block sidebar %}
-            {% endblock %}
+        {% if organization%}
+        <ul>
+            <li><a href="/emergencies/overview">Emergencies</a></li>
+            <li><a href="/emergencies/open">Open Emergencies</a></li>
+            <li><a href="/emergencies/create">Create Emergency</a></li>
+            <li><a href="/emergencies/manage">Manage Emergencies</a></li>
+            <li><a href="/members/manage">Manage Members</a></li>
+        </ul>
+        {% else %}{% if member %}
+        <ul>
+            <li><a href="/emergencies/overview">Emergencies</a></li>
+            <li><a href="/events/overview">Open Tasks</a></li>
+            <li><a href="/events/create">Create Tasks</a></li>
+        </ul>
+        {% else %}{% if volunter %}
+        <ul>
+            <li><a href="/emergencies/overview">Emergencies</a></li>
+            <li><a href="/tasks">Task</a></li>
+        </ul>
+        {% else %}
+        <ul>
+            <li><a href="/accounts/register">Sign up as a Volunteer</a></li>
+            <li><a href="/emergencies/">Emergencies</a></li>
+        </ul>
+        {% endif %}{% endif %}{% endif %}
 		</div>
 		<!-- end #sidebar -->
 		<div style="clear: both;">&nbsp;</div>

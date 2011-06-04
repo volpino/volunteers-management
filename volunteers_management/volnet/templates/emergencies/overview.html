@@ -1,10 +1,8 @@
-
 {% extends "base.html" %}
 
 
-IF VOLONTARIO
 {% block content_title %}
-WELCOME!
+Emergency Overview
 {% endblock %}
 
 {% block content %}
@@ -12,59 +10,17 @@ This is the content
 {% endblock %}
 
 {% block menu %}
+{% if organization or member or volunteer %}
 <li><a href="/accounts/manage">Edit Account</a></li>
 <li><a href="/accounts/logout">Logout</a></li>
+{% else %}
+<li><a href="/accounts/login">Login</a></li>
+{% endif %}
 
 {% endblock %}
 
 {% block sidebar %}
-<ul>
-    <li><a href="/emergencies/">Emergencies</a></li>
-    <li><a href="/tasks">Task</a></li>
-</ul>
-{% endblock %}
-
-ELSE IF MEMBRO
-
-{% block content_title %}
-WELCOME!
-{% endblock %}
-
-{% block content %}
-This is the content
-{% endblock %}
-
-{% block menu %}
-<li><a href="/accounts/manage">Edit Account</a></li>
-<li><a href="/accounts/logout">Logout</a></li>
-
-{% endblock %}
-
-{% block sidebar %}
-<ul>
-    <li><a href="/emergencies/">Emergencies</a></li>
-    <li><a href="/events">Open Tasks</a></li>
-    <li><a href="/events/create">Create Tasks</a></li>
-</ul>
-{% endblock %}
-
-ELSE IF ORGANIZATION
-
-{% block content_title %}
-WELCOME!
-{% endblock %}
-
-{% block content %}
-This is the content
-{% endblock %}
-
-{% block menu %}
-<li><a href="/accounts/manage">Edit Account</a></li>
-<li><a href="/accounts/logout">Logout</a></li>
-
-{% endblock %}
-
-{% block sidebar %}
+{% if organization %}
 <ul>
     <li><a href="/emergencies">Emergencies</a></li>
     <li><a href="/emergencies/open">Open Emergencies</a></li>
@@ -72,25 +28,22 @@ This is the content
     <li><a href="/emergencies/manage">Manage Emergencies</a></li>
     <li><a href="/members/manage">Manage Members</a></li>
 </ul>
-{% endblock %}
-
-ELSE
-
-{% block content_title %}
-WELCOME!
-{% endblock %}
-
-{% block content %}
-This is the content
-{% endblock %}
-
-{% block menu %}
-<li><a href="/accounts/login">Login</a></li>
-{% endblock %}
-
-{% block sidebar %}
+{% else %}{% if member %}
+<ul>
+    <li><a href="/emergencies/">Emergencies</a></li>
+    <li><a href="/events">Open Tasks</a></li>
+    <li><a href="/events/create">Create Tasks</a></li>
+</ul>
+{% else %}{% if volunteer%}
+<ul>
+    <li><a href="/emergencies/">Emergencies</a></li>
+    <li><a href="/tasks">Task</a></li>
+</ul>
+{% else %}
 <ul>
     <li><a href="/accounts/register">Sign up as a Volunteer</a></li>
     <li><a href="/emergencies/">Emergencies</a></li>
 </ul>
+{% endif %}{% endif %}{% endif %}
 {% endblock %}
+
