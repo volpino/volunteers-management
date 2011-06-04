@@ -61,7 +61,6 @@ Released   : 20100729
             <li><a href="/emergencies/manage">Manage Emergencies</a></li>
             <li><a href="/members/manage">Manage Members</a></li>
             <li><a href="/accounts/password/change">Change password</a></li>
-            <li><a href="/accounts/logout">Logout</a></li>
         </ul>
         {% else %}{% if member %}
         <ul>
@@ -69,14 +68,12 @@ Released   : 20100729
             <li><a href="/events/overview">Open Tasks</a></li>
             <li><a href="/events/create">Create Tasks</a></li>
             <li><a href="/accounts/password/change">Change password</a></li>
-            <li><a href="/accounts/logout">Logout</a></li>
         </ul>
         {% else %}{% if volunteer %}
         <ul>
             <li><a href="/emergencies/overview">Emergencies</a></li>
             <li><a href="/tasks">Task</a></li>
             <li><a href="/accounts/password/change">Change password</a></li>
-            <li><a href="/accounts/logout">Logout</a></li>
         </ul>
         {% else %}
         <ul>
@@ -84,6 +81,9 @@ Released   : 20100729
             <li><a href="/emergencies/">Emergencies</a></li>
         </ul>
         {% endif %}{% endif %}{% endif %}
+        {% if organization or member or volunteer %}
+        <li><a href="/accounts/logout">Logout</a></li>
+        {% endif %}
 		</div>
 		<!-- end #sidebar -->
 		<div style="clear: both;">&nbsp;</div>
