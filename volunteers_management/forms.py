@@ -21,7 +21,7 @@ class VolunteerInfoForm(forms.Form):
         ('F', 'Female'),
     )
 
-    SKILLS_CHOICES = (
+    LEVEL_CHOICES = (
         (0, 0),
         (1, 1),
         (2, 2),
@@ -39,13 +39,13 @@ class VolunteerInfoForm(forms.Form):
                        label="Telephone number",
                        required = True,
                        error_messages={'invalid': "This value must contain only numbers and - or /"})
-    manual = forms.ChoiceField(choices=SKILLS_CHOICES,
+    manual = forms.ChoiceField(choices=LEVEL_CHOICES,
                                label="Manual skills",
                                required=True)
-    medical = forms.ChoiceField(choices=SKILLS_CHOICES,
+    medical = forms.ChoiceField(choices=LEVEL_CHOICES,
                                label="Medical skills",
                                required=True)
-    social = forms.ChoiceField(choices=SKILLS_CHOICES,
+    social = forms.ChoiceField(choices=LEVEL_CHOICES,
                                label="Social skills",
                                required=True)
     location = forms.CharField(label="Location place (*)")
@@ -97,8 +97,49 @@ class NewEmergencyForm(forms.Form):
                            lat=self.cleaned_data["lat"],
                            lon=self.cleaned_data["lon"],
                            active=True,
-                           #notified_volunteers_set=set(),
-                           #volunteers=set(),
-                           start_date="2011-01-01"
                            )
             em.save()
+
+def create_event_form(member):
+    class NewEventForm(forms.Form):
+        emergency = forms.ModelChoiceField(queryset=Emergency.objects.filter(organization__exact=member.organization))
+        name = forms.CharField(label="Event name",
+                               max_length=100,
+                               required = True)
+        description = forms.CharField(label="Event Description",
+                                      widget=forms.Textarea(),
+                                      required=True)
+        skill_type = forma.CharField(label="Skills type required", max_length=1,
+                                     required=True, choices=SKILLS_CHOICES)
+        min_skill = forms.ChoiceField(label="Required skill level",
+                                      choices=LEVEL_CHOICES, required=True)
+        needed_people = forms.IntegerField(label="Estimated needed people",
+                                           required=True)
+        priority = forms.ChoiceField(label="Required skill level",
+                                     choices=LEVEL_CHOICES, required=True)
+        end_date = forms.DateField(label="Estimated deadline",
+                                   required=False)
+        location = forms.CharField(label="Event place (*)")
+        lat = forms.FloatField(label="Event latitude", required=True)
+        lon = forms.FloatField(label="Event longitude", required=True)
+
+        def save_event(self):
+            #Quando checko che user sia in effetti un'organization
+            qset = (Q(organization__exact=member.organization))
+            emergency = Emergency.objects.filter(qset)
+            if emergency:
+                ev = Event(member=member,
+                           emergency=emergency[0],
+                           name=self.cleaned_data["name"],
+                           description=self.cleaned_data["description"],
+                           skill_type=self.cleaned_data["skill_type"],
+                           min_skill=self.cleaned_data["min_skill"],
+                           needed_people=self.cleaned_data["needed_people"],
+                           priority=self.cleaned_data["priority"],
+                           end_date=self.cleaned_data["end_date"],
+                           lat=self.cleaned_data["lat"],
+                           lon=self.cleaned_data["lon"],
+                           active=True,
+                          )
+                ev.save()
+    return NewEventForm

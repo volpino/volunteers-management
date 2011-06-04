@@ -22,6 +22,25 @@ urlpatterns = patterns('',
     url(r'^accounts/profile/$', profile),
     url(r'^contact/$', contact),
     url(r'^about/$', about),
+
     url(r'^emergencies/create/$', new_emergency),
     url(r'^facebook/', include('facebookconnect.urls')),
+
+    url(r'^emergencies/description/', emergency_desc), #template emergencies/desc.html  link 'join' ->!!!
+    url(r'^emergencies/manage/', emergency_manage), # link a emergency_close
+    url(r'^emergencies/overview/$', emergency_overview), #elenco delle emergencies, per tutti
+
+    url(r'^events/create/$', new_event), #for the member
+    url(r'^events/description/', event_desc), #for organization and the member and the volunteers
+    url(r'^events/myevents/$', my_events),  #for the member
+    url(r'^events/overview/$', event_overview), #list of events, per l'organization
+    url(r'^events/mytask/$', my_task), #for the volunteer ; c'e` dentro il tasto 'leave'
+
+    url(r'^members/manage/', members_manage), #for the organization
+
+    url(r'^emergencies/join/', emergency_join), # non c'e` template: la view ti redirige alla home dopo averti aggiunto al db
+    url(r'^emergencies/leave/', emergency_leave),
+    url(r'^emergencies/close/', emergency_close), # per organizations
+    url(r'^emergencies/call_volunteers', call_volunteers) # per organizations
+                       #ti manda in emergency_manage
 )

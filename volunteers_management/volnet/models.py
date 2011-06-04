@@ -69,6 +69,7 @@ class Event(models.Model):
                  related_name="event_volunteers", blank=True)
     name = models.CharField("Name", max_length=100)
     description = models.TextField("Description")
+    needed_people = models.IntegerField("Estimated needed people")
     skill_type = models.CharField("Skills type required", max_length=1,
                                   choices=SKILLS_CHOICES)
     min_skill = IntegerRangeField("Minimum skills required",
@@ -79,6 +80,9 @@ class Event(models.Model):
     lat = models.FloatField("Latitude")
     lon = models.FloatField("Longitude")
     active = models.BooleanField("Active")
+
+    def __unicode__(self):
+        return self.name
 
 class EventComment(models.Model):
     user = models.ForeignKey(User)
