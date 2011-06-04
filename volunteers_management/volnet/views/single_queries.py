@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from volnet.models import *
 from volnet.views.views import *
 
-def emergency(request):
+def emergency_desc(request):
     #following variables are passed to the template
     user = request.user
     organization = is_organization(user)
@@ -14,7 +14,7 @@ def emergency(request):
     em = None
     enroled = False
 
-    query = request.GET.get("emergency")
+    query = request.GET.get("id")
     if query:
         em = Emergency.get(pk=query)
     if is_volunteer(user) and em:
@@ -25,7 +25,7 @@ def emergency(request):
     render_to_response("emergencies/desc.html", locals())
 
 def event(request):
-    query = request.GET.get("event")
+    query = request.GET.get("id")
     event = None
     if query:
         event = Emergency.get(pk=query)
