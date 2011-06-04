@@ -1,52 +1,6 @@
 {% extends "base.html" %}
 
-IF VOLONTARIO
-{% block content_title %}
-WELCOME!
-{% endblock %}
-
-{% block content %}
-This is the content
-{% endblock %}
-
-{% block menu %}
-<li><a href="/accounts/manage">Edit Account</a></li>
-<li><a href="/accounts/logout">Logout</a></li>
-
-{% endblock %}
-
-{% block sidebar %}
-<ul>
-    <li><a href="/emergencies/overview">Emergencies</a></li>
-    <li><a href="/tasks">Task</a></li>
-</ul>
-{% endblock %}
-
-ELSE IF MEMBRO
-
-{% block content_title %}
-WELCOME!
-{% endblock %}
-
-{% block content %}
-This is the content
-{% endblock %}
-
-{% block menu %}
-<li><a href="/accounts/manage">Edit Account</a></li>
-<li><a href="/accounts/logout">Logout</a></li>
-
-{% endblock %}
-
-{% block sidebar %}
-<ul>
-    <li><a href="/emergencies/overview">Emergencies</a></li>
-    <li><a href="/events/overview">Open Tasks</a></li>
-    <li><a href="/events/create">Create Tasks</a></li>
-</ul>
-{% endblock %}
-
-ELSE IF ORGANIZATION
+{% if organization %}
 
 {% block content_title %}
 WELCOME!
@@ -71,3 +25,54 @@ This is the content
     <li><a href="/members/manage">Manage Members</a></li>
 </ul>
 {% endblock %}
+
+{% else %}
+{% if member %}
+
+{% block content_title %}
+WELCOME!
+{% endblock %}
+
+{% block content %}
+This is the content
+{% endblock %}
+
+{% block menu %}
+<li><a href="/accounts/manage">Edit Account</a></li>
+<li><a href="/accounts/logout">Logout</a></li>
+
+{% endblock %}
+
+{% block sidebar %}
+<ul>
+    <li><a href="/emergencies/overview">Emergencies</a></li>
+    <li><a href="/events/overview">Open Tasks</a></li>
+    <li><a href="/events/create">Create Tasks</a></li>
+</ul>
+{% endblock %}
+
+{% else %}
+{% if volunteer %}
+
+{% block content_title %}
+WELCOME!
+{% endblock %}
+
+{% block content %}
+This is the content
+{% endblock %}
+
+{% block menu %}
+<li><a href="/accounts/manage">Edit Account</a></li>
+<li><a href="/accounts/logout">Logout</a></li>
+
+{% endblock %}
+
+{% block sidebar %}
+<ul>
+    <li><a href="/emergencies/overview">Emergencies</a></li>
+    <li><a href="/tasks">Task</a></li>
+</ul>
+{% endblock %}
+
+{% endif %}{% endif %}{% endif %}
