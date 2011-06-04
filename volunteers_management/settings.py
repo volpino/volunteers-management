@@ -2,6 +2,7 @@
 
 import os
 import django
+from settings_local import *
 
 DJANGO_ROOT = os.path.dirname(os.path.realpath(django.__file__))
 SITE_ROOT = os.path.dirname(os.path.realpath(__file__))
@@ -164,5 +165,4 @@ LOGGING = {
 
 ACCOUNT_ACTIVATION_DAYS=7
 FACEBOOK_API_KEY="1f140b0d0ad705482396d59bf77ff302"
-FACEBOOK_SECRET_KEY=""
 FACEBOOK_INTERNAL = True
