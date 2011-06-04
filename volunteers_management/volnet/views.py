@@ -1,6 +1,7 @@
 from django.shortcuts import render_to_response
 from django.http import HttpResponse
 from django.db.models import Q
+from django.contrib.auth.decorators import login_required
 from volnet.models import *
 
 def home(request):
