@@ -29,10 +29,10 @@ def is_volunteer(user):
 def profile(request):
     user = request.user
     if is_organization(user):
-        render_to_response("home_organizations.html")
+        return render_to_response("home_organizations.html")
     elif is_member(user):
-        render_to_reponse("home_members.html")
+        return render_to_reponse("home_members.html")
     elif is_volunteer(user):
-        render_to_response("home_volunteers.html")
+        return render_to_response("home_volunteers.html")
 
 
