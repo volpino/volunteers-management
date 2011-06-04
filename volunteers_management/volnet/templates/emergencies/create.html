@@ -1,10 +1,7 @@
-
 {% extends "base.html" %}
-
 {% block content_title %}
-WELCOME!
+Create new emergency
 {% endblock %}
-
 {% block content %}
     <p>Please add your data:</p>
     <form action="." method="POST">
@@ -14,4 +11,3 @@ WELCOME!
         {% csrf_token %}
     </form>
 {% endblock %}
-

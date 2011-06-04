@@ -32,7 +32,6 @@ Released   : 20100729
                     <li><a href="/contact/">Contact us</a></li>
                     {% if organization or member or volunteer %}
                     <li><a href="/accounts/manage">Edit Account</a></li>
-                    <li><a href="/accounts/logout">Logout</a></li>
                     {% else %}
                     <li><a href="/accounts/login">Login</a></li>
                     {% endif %}
@@ -58,17 +57,20 @@ Released   : 20100729
             <li><a href="/emergencies/create">Create Emergency</a></li>
             <li><a href="/emergencies/manage">Manage Emergencies</a></li>
             <li><a href="/members/manage">Manage Members</a></li>
+            <li><a href="/accounts/logout">Logout</a></li>
         </ul>
         {% else %}{% if member %}
         <ul>
             <li><a href="/emergencies/overview">Emergencies</a></li>
             <li><a href="/events/overview">Open Tasks</a></li>
             <li><a href="/events/create">Create Tasks</a></li>
+            <li><a href="/accounts/logout">Logout</a></li>
         </ul>
         {% else %}{% if volunteer %}
         <ul>
             <li><a href="/emergencies/overview">Emergencies</a></li>
             <li><a href="/tasks">Task</a></li>
+            <li><a href="/accounts/logout">Logout</a></li>
         </ul>
         {% else %}
         <ul>
