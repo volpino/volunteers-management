@@ -1,0 +1,25 @@
+
+{% extends "base.html" %}
+
+{% block content_title %}
+WELCOME!
+{% endblock %}
+
+{% block content %}
+This is the content
+dati eventi
+{% endblock %}
+
+{% block menu %}
+<li><a href="/accounts/manage">Edit Account</a></li>
+<li><a href="/accounts/logout">Logout</a></li>
+
+{% endblock %}
+
+{% block sidebar %}
+<ul>
+    <li><a href="/emergencies/overview">Emergencies</a></li>
+    <li><a href="/events/overview">Open Tasks</a></li>
+    <li><a href="/events/create">Create Tasks</a></li>
+</ul>
+{% endblock %}
