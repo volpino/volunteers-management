@@ -141,8 +141,8 @@ def my_events(request):
     user = request.user
     qset = (Q(user__exact=user))
     member = Member.objects.filter(qset)[0]
-    evs = Events.objects.filter(member=member)
-    return render_to_response("events/my_events.html", locals())
+    evs = Event.objects.filter(member=member)
+    return render_to_response("events/myevents.html", locals())
 
 def event_overview(request):
     pass
