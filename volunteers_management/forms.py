@@ -3,6 +3,15 @@ from volnet.models import *
 from django.db.models import Q
 from datetime import datetime
 
+LEVEL_CHOICES = (
+    (0, 0),
+    (1, 1),
+    (2, 2),
+    (3, 3),
+    (4, 4),
+    (5, 5)
+)
+
 class VolunteerInfoForm(forms.Form):
     first_name = forms.RegexField(regex=r'^[a-zA-Z]+$',
                                   max_length=100,
@@ -21,14 +30,6 @@ class VolunteerInfoForm(forms.Form):
         ('F', 'Female'),
     )
 
-    LEVEL_CHOICES = (
-        (0, 0),
-        (1, 1),
-        (2, 2),
-        (3, 3),
-        (4, 4),
-        (5, 5)
-    )
     gender = forms.ChoiceField(choices=GENDER_CHOICES,
                                label="Gender",
                                required=True)
@@ -109,13 +110,13 @@ def create_event_form(member):
         description = forms.CharField(label="Event Description",
                                       widget=forms.Textarea(),
                                       required=True)
-        skill_type = forma.CharField(label="Skills type required", max_length=1,
+        skill_type = forms.ChoiceField(label="Skills type required",
                                      required=True, choices=SKILLS_CHOICES)
         min_skill = forms.ChoiceField(label="Required skill level",
                                       choices=LEVEL_CHOICES, required=True)
         needed_people = forms.IntegerField(label="Estimated needed people",
                                            required=True)
-        priority = forms.ChoiceField(label="Required skill level",
+        priority = forms.ChoiceField(label="Priority",
                                      choices=LEVEL_CHOICES, required=True)
         end_date = forms.DateField(label="Estimated deadline",
                                    required=False)

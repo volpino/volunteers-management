@@ -95,12 +95,48 @@ def profile(request):
 
 
 def new_event(request):
+    user = request.user
     qset = (Q(user__exact=user))
-    member = Member.objects.filter(qset)
-    f = createNewEventForm(member)
+    member = Member.objects.filter(qset)[0]
+    f = create_event_form(member)
     if request.method == "POST":
         form = f(request.POST)
         if form.is_valid():
-            form.save_events(user)
+            form.save_event()
     else:
         form = f()
+    return render_to_response("events/create.html", locals(),
+                              context_instance=RequestContext(request))
+
+def event_desc(request):
+    pass
+
+def my_events(request):
+    pass
+
+def event_overview(request):
+    pass
+
+def my_task(request):
+    pass
+
+def members_manage(reuqest):
+    pass
+
+def emergency_manage(request):
+    pass
+
+def emergency_overview(request):
+    pass
+
+def emergency_join(request):
+    pass
+
+def emergency_leave(request):
+    pass
+
+def emergency_close(request):
+    pass
+
+def call_volunteers(request):
+    pass
