@@ -13,13 +13,6 @@ def home(request):
     if user.is_authenticated():
         return HttpResponseRedirect("/accounts/profile/")
     return HttpResponseRedirect("/emergencies/overview/")
-#dalla home (cioe`:da profiles): redirects
-#    imbecille -> emergencies/overview/
-#    volontario -> se enroled: events/mytask/
-#                  else      : emergencies/overview/
-#    member  -> events/myevents/
-#    organization -> se ha emergenza aperta: events/overview/
-#                    altrimenti: emergencies/create/
 
 def about(request):
     user = request.user
@@ -73,17 +66,39 @@ def profile(request):
     organization = is_organization(user)
     member = is_member(user)
     volunteer = is_volunteer(user)
-    qset = (Q(user__exact=user))
-    vol = Volunteer.objects.filter(qset)
-    emergency = None
-    emergency_list = Emergency.objects.filter(active=True)
+    #emergency = None
+    #emergency_list = Emergency.objects.filter(active=True)
+    """
     if organization or member or volunteer:
         for em in emergency_list:
             if vol in em.volunteers:
                 emergency = em
                 break
         return render_to_response("home.html", locals())
-    if request.method == "POST":
+    """
+    if organization:
+        qset = (Q(user__exact=user))
+        org = Organization.objects.filter(qset)
+        qset = (Q(organization__exact=org))
+        all_ems = Emergency.objects.filter(qset)
+        qset = (Q(active=True))
+        ems = all_ems.filter(qset)
+        if ems:
+            HttpResponseRedirect("/events/overview/")
+        else:
+            HttpResponseRedirect("/emergencies/create/")
+    elif member:
+        HttpResponseRedirect("/events/myevents/")
+    elif volunteer:
+        qset = (Q(active=True))
+        active_ems = Emergency.objects.filter(qset)
+        qset = (Q(user__exact=user))
+        vol = Volunteer.objects.filter(qset)
+        for em in active_ems:
+            if vol in em.volunteers:
+                HttpResponseRedirect("/events/mytasks/")
+        HttpResponseRedirect("/emergencies/overview/")
+    elif request.method == "POST":
         form = VolunteerInfoForm(request.POST)
         if form.is_valid():
             form.save_volunteer(user)
@@ -93,3 +108,10 @@ def profile(request):
     return render_to_response("insert_volunteer_info.html", locals(),
                               context_instance=RequestContext(request))
 
+#dalla home (cioe`:da profiles): redirects
+#    imbecille -> emergencies/overview/
+#    volontario -> se enroled: events/mytask/
+#                  else      : emergencies/overview/
+#    member  -> events/myevents/
+#    organization -> se ha emergenza aperta: events/overview/
+#                    altrimenti: emergencies/create/
