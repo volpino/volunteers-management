@@ -1,1 +1,4 @@
 *.pyc
+*.db
+*_local.py
+*.swp
