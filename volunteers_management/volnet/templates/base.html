@@ -34,8 +34,11 @@ Released   : 20100729
 	<!-- end #header -->
 	<div id="page">
         <div id="content">
-            {% block content %}
-            {% endblock %}
+            <h3>{% block content_title %}{% endblock %}</h3>
+            <div>
+                {% block content %}
+                {% endblock %}
+            </div>
 		</div>
 		<!-- end #content -->
 		<div id="sidebar">
