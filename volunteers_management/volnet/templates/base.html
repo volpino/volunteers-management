@@ -25,9 +25,14 @@ Released   : 20100729
 			<div id="logo">
 				<h1><a href="#"><span>Volunteers</span>Management</a></h1>
 			</div>
-			<div id="menu">
-                {% block menu %}
-                {% endblock %}
+            <div id="menu">
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/about/">About</a></li>
+                    <li><a href="/contact/">Contact us</a></li>
+                    {% block menu %}
+                    {% endblock %}
+                </ul>
 			</div>
 		</div>
 	</div>

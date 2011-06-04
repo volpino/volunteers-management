@@ -6,7 +6,7 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     # Examples:
-    # url(r'^$', 'volunteers_management.views.home', name='home'),
+    url(r'^$', 'volnet.views.home', name='home'),
     # url(r'^volunteers_management/', include('volunteers_management.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
