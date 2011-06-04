@@ -1,4 +1,4 @@
-==Requirements==
-* pyfacebook
-* django-registration
-* django-facebookconnect
+##Requirements
+- pyfacebook
+- django-registration
+- django-facebookconnect
