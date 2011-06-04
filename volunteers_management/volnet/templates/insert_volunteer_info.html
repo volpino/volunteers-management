@@ -1,36 +1,5 @@
 {% extends "base.html" %}
-<script type="text/javascript" src="/static/jquery-1.5.js"></script>
-<script type="text/javascript" src="/static/jquery.autocomplete.min.js"></script>
-<script type="text/javascript">
-function attachAutoComplete(expression) {
- $(expression).unautocomplete();
-alert(1);
- $(expression).autocomplete("http://nominatim.openstreetmap.org/search/",  {
-    dataType: "jsonp",
-    parse: function(data) {
-      var rows = new Array();
-      for (var i = 0; i < data.length; i++){
-        rows[i] = { data: {lat: data[i].lat, lon: data[i].lon}
-                    value: data[i].display_name,
-                    result: data[i].display_name };
-      }
-      return rows;
-    },
-    formatItem: function(row) { return row; },
-    extraParams: {
-      action: "opensearch",
-      format: "json",
-      q: function () { return $(expression).val() } },
-    max: 10
- });
- $(expression).result(function() {  });
-}
 
-$(document).ready(function (){
-    attachAutoComplete("#city");
-});
-</script>
-<link rel="stylesheet" href="/static/jquery.autocomplete.css"/>
 {% block content_title %}
 Volunteer information
 {% endblock %}
@@ -44,5 +13,51 @@ Volunteer information
         {% csrf_token %}
     </form>
 </div>
+
+<script type="text/javascript" src="/static/jquery-1.5.js"></script>
+<script type="text/javascript" src="/static/jquery.autocomplete.min.js"></script>
+<link rel="stylesheet" href="/static/jquery.autocomplete.css"/>
+
+<script type="text/javascript">
+var rows;
+function attachAutoComplete(expression) {
+ $(expression).unautocomplete();
+ $(expression).autocomplete("http://nominatim.openstreetmap.org/search/",  {
+    dataType: "jsonp",
+    jsonp: "json_callback",
+    parse: function(data) {
+      rows = new Array();
+      for (var i = 0; i < data.length; i++){
+        if (data[i].class == "place") {
+            rows[i] = { data: data[i].display_name,
+                        value: {lat: data[i].lat, lon: data[i].lon},
+                        result: data[i].display_name };
+        }
+      }
+      return rows;
+    },
+    formatItem: function(row) { return row; },
+    extraParams: {
+      action: "opensearch",
+      format: "json",
+      q: function () { return $(expression).val() } },
+    max: 10
+ });
+ $(expression).result(function(event, data, formatted) {
+    for (var i=0; i<rows.length; i++) {
+        if (rows[i].data == data) {
+            $("#id_lat").val(rows[i].value.lat);
+            $("#id_lon").val(rows[i].value.lon);
+            break;
+        }
+    }
+ });
+}
+
+
+attachAutoComplete("#city");
+
+</script>
+
 
 {% endblock %}

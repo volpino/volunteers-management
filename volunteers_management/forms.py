@@ -48,8 +48,10 @@ class VolunteerInfoForm(forms.Form):
     social = forms.ChoiceField(choices=SKILLS_CHOICES,
                                label="Social skills",
                                required=True)
-    lat = forms.FloatField("Home city latitude", required=True)
-    lon = forms.FloatField("Home city longitude", required=True)
+    lat = forms.FloatField("Home city latitude", widget=forms.HiddenInput(),
+                           required=True)
+    lon = forms.FloatField("Home city longitude", widget=forms.HiddenInput(),
+                           required=True)
 
     def save_volunteer(self, user):
         u = user
@@ -72,7 +74,8 @@ class NewEmergencyForm(forms.Form):
     name = forms.CharField(label="Emergency Name",
                            max_length=100,
                            required = True)
-    description = forms.TextField(label="Emergency Description",
+    description = forms.CharField(label="Emergency Description",
+                                  widget=forms.Textarea(),
                                   required=True)
     needed_people = forms.IntegerField(label="Estimated needed people",
                                        required=True)
@@ -80,24 +83,22 @@ class NewEmergencyForm(forms.Form):
                                required=False)
     lat = forms.FloatField("Emergency latitude", required=True)
     lon = forms.FloatField("Emergency longitude", required=True)
-    
+
     def save_emergency(self, user):
-        #Quando checko che user sia in effetti un'organization?
-        organization = None
+        #Quando checko che user sia in effetti un'organization
         qset = (Q(user__exact=user))
         organization = Organization.objects.filter(qset)
         if organization:
-            em = Emergency(organization=organization,
+            em = Emergency(organization=organization[0],
                            name=self.cleaned_data["name"],
                            description=self.cleaned_data["description"],
                            needed_people=self.cleaned_data["needed_people"],
                            end_date=self.cleaned_data["end_date"],
-                           description=self.cleaned_data["description"],
                            lat=self.cleaned_data["lat"],
                            lon=self.cleaned_data["lon"],
                            active=True,
-                           notified_volunteers=[],
-                           volunteers=[],
-                           start_date=datetime.time(datetime.now())
+                           #notified_volunteers_set=set(),
+                           #volunteers=set(),
+                           start_date="2011-01-01"
                            )
             em.save()
