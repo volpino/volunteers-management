@@ -1,5 +1,5 @@
 from django.shortcuts import render_to_response
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from volnet.models import *
@@ -107,21 +107,66 @@ def profile(request):
 #    organization -> se ha emergenza aperta: events/overview/
 #                    altrimenti: emergencies/create/
 
+def emergency_desc(request):
+    #following variables are passed to the template
+    user = request.user
+    volunteer = None
+    member = None
+    organization = None
+    if user.is_authenticated():
+        volunteer = is_volunteer(user)
+        member = is_member(user)
+        organization = is_organization(user)
+    em = None
+    enroled = False
+
+    query = request.GET.get("id")
+    if query:
+        em = Emergency.objects.get(pk=query)
+    if volunteer and em:
+        qset = (Q(user__exact=user))
+        vol = Volunteer.objects.filter(qset)
+        if vol in em.volunteers:
+            enroled = True
+    return render_to_response("emergencies/desc.html", locals())
+
+@login_required
+def new_emergency(request):
+    user = request.user
+    organization = is_organization(user)
+    member = is_member(user)
+    volunteer = is_volunteer(user)
+    if organization:
+        if request.method == "POST":
+            form = NewEmergencyForm(request.POST)
+            if form.is_valid():
+                form.save_emergency(user)
+        else:
+            form = NewEmergencyForm()
+        return render_to_response("emergencies/create.html", locals(),
+                                  context_instance=RequestContext(request))
+    return HttpResponseForbidden()
+
+
 @login_required
 def new_event(request):
     user = request.user
+    organization = is_organization(user)
+    member = is_member(user)
+    volunteer = is_volunteer(user)
     qset = (Q(user__exact=user))
-    member = Member.objects.filter(qset)[0]
-    f = create_event_form(member)
+    mem = Member.objects.filter(qset)[0]
+    f = create_event_form(mem)
     if request.method == "POST":
         form = f(request.POST)
         if form.is_valid():
             form.save_event()
-            return HttpRedirectResponse("/")
+            return HttpResponseRedirect("/")
     else:
         form = f()
     return render_to_response("events/create.html", locals())
 
+@login_required
 def event_desc(request):
     user = request.user
     volunteer = None
@@ -135,10 +180,9 @@ def event_desc(request):
     ev = None
     if ev_id:
         ev = Event.objects.filter(Q(pk__exact=ev_id))
-        if ev_id and (volontario or member or organization):
-            ev = Event.objects.filter(Q(pk__exact=ev_id))
+        if ev and (volontario or member or organization):
             return render_to_response("events/desc.html", locals())
-    return  HttpResponseRedirect("/")
+    return HttpResponseForbidden()
 
 @login_required
 def my_events(request):
@@ -152,7 +196,7 @@ def my_events(request):
         evs = Event.objects.filter(member=mem[0])
         return render_to_response("events/myevents.html", locals())
     else:
-        return HttpRedirectResponse("/")
+        return HttpResponseForbidden()
 
 def event_overview(request):
     ems_open = Emergency.objects.filter(Q(active=True))
@@ -162,19 +206,23 @@ def event_overview(request):
         result[ems] = Event.objects.filter(qset)
     return render_to_response("events/overview.html", locals())
 
+@login_required
 def my_task(request):
     organization = is_organization(user)
     member = is_member(user)
     volunteer = is_volunteer(user)
     qset = (Q(user__exact=user))
-    vol = Member.objects.filter(qset)
+    vol = Volunteer.objects.filter(qset)[0]
     evs_open = Event.objects.filter(active=True)
     evs = None
     for ev in evs_open:
-        if vol in ev.volunteers:
+        if vol in ev.volunteers.all():
             evs = ev
             break
-    return HttpResponseRedirect("/events/description/?id=%d" % evs.pk)
+    if evs:
+        return HttpResponseRedirect("/events/description/?id=%d" % evs.pk)
+    else:
+        return render_to_response("events/mytask.html", locals())
 
 def members_manage(reuqest):
     pass
@@ -199,6 +247,7 @@ def emergency_manage(request):
                 if em:
                     return render_to_response("emergencies/manage.html",
                                               locals())
+    return HttpResponseForbidden()
 
 def emergency_overview(request):
     user = request.user
@@ -214,6 +263,7 @@ def emergency_overview(request):
     ems_closed = Emergency.objects.filter(Q(active=False))
     return render_to_response("emergencies/overview.html", locals())
 
+@login_required
 def emergency_join(request):
     if user.is_authenticated():
         if is_volunteer(user):
@@ -231,8 +281,9 @@ def emergency_join(request):
                     if em:
                         em = em[0]
                         em.volunteers.add(vol)
-    return HttpRedirectResponse("/")
+    return HttpResponseForbidden()
 
+@login_required
 def emergency_leave(request):
     if user.is_authenticated():
         if is_volunteer(user):
@@ -243,8 +294,10 @@ def emergency_leave(request):
                 if em:
                     em = em[0]
                     em.volunteers.remove(vol)
-    return HttpRedirectResponse("/")
+    return HttpResponseForbidden()
 
+
+#non e` una view
 def closeevent(event):
     event.active = False
     event.save()
@@ -252,21 +305,24 @@ def closeevent(event):
         vol.available = True
         vol.save()
 
+@login_required
 def event_close(request):
     user = request.user
     organization = is_organization(user)
     member = is_member(user)
     volunteer = is_volunteer(user)
     qset = (Q(user__exact=user))
-    org = Organization.objects.filter(qset)
-    evs_open = Event.objects.filter(active=True)
-    query = request.GET.get("id")
-    if query and org:
-        ev = Event.objects.get(pk=query)
-        if ev:
+    mem = Members.objects.filter(qset)[0]
+    #evs_open = Event.objects.filter(active=True)
+    ev_id = request.GET.get("id")
+    if ev_id:
+        ev = Event.objects.get(pk=ev_id)
+        if ev and (mem in ev.member.all()):
             closeevent(ev)
-    return HttpRedirectResponse("/")
+            return HttpResponseRedirect("/")
+    return HttpResponseForbidden()
 
+@login_required
 def emergency_close(request):
     user = request.user
     organization = is_organization(user)
@@ -277,12 +333,13 @@ def emergency_close(request):
     evs_open = Event.objects.filter(active=True)
     query = request.GET.get("id")
     if query and org:
-        em = Emergency.objects.get(pk=query)
+        em = Emergency.objects.get(pk=query)[0]
         if em:
-            evs = evs_open.objects.filter(emergency__exact=em)
+            evs = evs_open.filter(emergency__exact=em)
             for ev in evs:
                 closeevent(ev)
-    return HttpRedirectResponse("/")
+                return HttpRedirectResponse("/")
+    return HttpResponseForbidden()
 
 def call_volunteers(request):
     pass
