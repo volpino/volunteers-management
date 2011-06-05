@@ -262,8 +262,8 @@ def my_emergencies(request):
         org = Organization.objects.filter(Q(user__exact=user))[0]
         if org: #should always be true
             ems = Emergency.objects.filter(Q(active__exact=True))
-            ems = ems.filter.(Q(organization__exact=org))
-            if ems return render_to_response("emergencies/my_emergencies.html",
+            ems = ems.filter(Q(organization__exact=org))
+            if ems: return render_to_response("emergencies/my_emergencies.html",
                                              locals())
     return HttpResponseForbidden()
 
