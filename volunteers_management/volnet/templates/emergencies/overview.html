@@ -6,12 +6,12 @@ Emergencies
 <h4>Open emergencies</h4>
 <ul>
     {% for emerg in ems_open %}
-    <li><a href=/emergencies/desc.html/?id={emerg.pk}>{{emerg.name}}</a></li>
+    <li><a href=/emergencies/description/?id={{emerg.pk}}>{{emerg.name}}</a></li>
     {% endfor %}
 </ul>
 <h4>Closed emergencies</h4>
 <ul>
     {% for emerg in ems_closed %}
-    <li><a href=/emergencies/desc.html/?id={emerg.pk}>{{emerg.name}}</a></li>
+    <li><a href=/emergencies/description/?id={{emerg.pk}}>{{emerg.name}}</a></li>
     {% endfor%}
 {% endblock %}
