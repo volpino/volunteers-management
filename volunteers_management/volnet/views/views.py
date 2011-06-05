@@ -68,14 +68,6 @@ def profile(request):
     volunteer = is_volunteer(user)
     #emergency = None
     #emergency_list = Emergency.objects.filter(active=True)
-    """
-    if organization or member or volunteer:
-        for em in emergency_list:
-            if vol in em.volunteers.all():
-                emergency = em
-                break
-        return render_to_response("home.html", locals())
-    """
     if organization:
         qset = (Q(user__exact=user))
         org = Organization.objects.filter(qset)
@@ -90,10 +82,8 @@ def profile(request):
     elif member:
         return HttpResponseRedirect("/events/myevents/")
     elif volunteer:
-        qset = (Q(active=True))
-        active_ems = Emergency.objects.filter(qset)
-        qset = (Q(user__exact=user))
-        vol = Volunteer.objects.filter(qset)
+        active_ems = Emergency.objects.filter(Q(active=True))
+        vol = Volunteer.objects.filter(Q(user__exact=user))
         for em in active_ems:
             if vol in em.volunteers:
                 return HttpResponseRedirect("/events/mytasks/")
@@ -147,7 +137,7 @@ def event_desc(request):
         ev = Event.objects.filter(Q(pk__exact=ev_id))
         if ev_id and (volontario or member or organization):
             ev = Event.objects.filter(Q(pk__exact=ev_id))
-            return render_to_response("events/create.html", locals())
+            return render_to_response("events/desc.html", locals())
     return  HttpResponseRedirect("/")
 
 @login_required
@@ -190,7 +180,25 @@ def members_manage(reuqest):
     pass
 
 def emergency_manage(request):
-    pass
+    user = request.user
+    volunteer = None
+    member = None
+    organization = None
+    if user.is_authenticated():
+        volunteer = is_volunteer(user)
+        member = is_member(user)
+        organization = is_organization(user)
+    if organization:
+        org = Organization.objects.filter(Q(user__exact=user))
+        org = org[0]
+        em_id  = request.GET.get("id")
+        if em_id:
+            ems = Emergency.objects.filter(Q(pk__exact=em_id))
+            if ems:
+                em = ems.filter(Q(organization__exact=org))
+                if em:
+                    return render_to_response("emergencies/manage.html",
+                                              locals())
 
 def emergency_overview(request):
     user = request.user
@@ -207,10 +215,36 @@ def emergency_overview(request):
     return render_to_response("emergencies/overview.html", locals())
 
 def emergency_join(request):
-    pass
+    if user.is_authenticated():
+        if is_volunteer(user):
+            active_ems = Emergency.objects.filter(Q(active=True))
+            vol = Volunteer.objects.filter(Q(user__exact=user))
+            free_vol=True
+            for em in active_ems:
+                if not(vol in em.volunteers):
+                    free_vol=False
+                    break
+            if free_vol:
+                em_id  = request.GET.get("id")
+                if em_id:
+                    em = Emergency.objects.filter(Q(pk__exact=em_id))
+                    if em:
+                        em = em[0]
+                        em.volunteers.add(vol)
+    return HttpRedirectResponse("/")
 
 def emergency_leave(request):
-    pass
+    if user.is_authenticated():
+        if is_volunteer(user):
+            vol = Volunteer.objects.filter(Q(user__exact=user))
+            em_id  = request.GET.get("id")
+            if em_id:
+                em = Emergency.objects.filter(Q(pk__exact=em_id))
+                if em:
+                    em = em[0]
+                    em.volunteers.remove(vol)
+    return HttpRedirectResponse("/")
+    
 
 def emergency_close(request):
     pass
