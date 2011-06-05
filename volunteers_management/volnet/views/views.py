@@ -130,7 +130,22 @@ def new_event(request):
     return render_to_response("events/create.html", locals())
 
 def event_desc(request):
-    pass
+    user = request.user
+    volunteer = None
+    member = None
+    organization = None
+    if user.is_authenticated():
+        volunteer = is_volunteer(user)
+        member = is_member(user)
+        organization = is_organization(user)
+    ev_id  = request.GET.get("id")
+    ev = None
+    if ev_id:
+        ev = Event.objects.filter(Q(pk__exact=ev_id))
+        if (ev_id and (volontario or member or organization):
+            ev = Event.objects.filter(Q(pk__exact=ev_id))
+            return render_to_response("events/create.html", locals())
+    return  HttpResponseRedirect("/")
 
 def my_events(request):
     pass
@@ -148,6 +163,15 @@ def emergency_manage(request):
     pass
 
 def emergency_overview(request):
+    user = request.user
+    volunteer = None
+    member = None
+    organization = None
+    if user.is_authenticated():
+        volunteer = is_volunteer(user)
+        member = is_member(user)
+        organization = is_organization(user)
+    
     ems_open = Emergency.object.filter(Q(active=True))
     ems_closed = Emergency.object.filter(Q(active=False))
     return render_to_response("events/create.html", locals(),
