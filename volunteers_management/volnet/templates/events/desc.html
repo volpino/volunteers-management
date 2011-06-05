@@ -3,6 +3,23 @@
 Event description
 {% endblock %}
 {% block content %}
-This is the content
-descrizione evento
+
+<ul style="list-syle-type: none">
+<li> Emergecy: {{ev.emergecy}} 
+Volunteers:
+<ol> 
+{% for vol in ev.volunteers %}
+   <li> vol.name </li>
+{% endfor %}
+</ol>
+<li> Start date: {{ev.start_date}}</li>
+<li> End date: {{ev.end_date}}</li>
+<li> Description: {{ev.description}}</li>
+<li> Active: {{ev.active}} </li>
+</ul>
+
+{% if owner %}
+<br>
+<a href=events/close> Close event </a>
+{% endif %}
 {% endblock %}

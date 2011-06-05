@@ -3,5 +3,15 @@
 Manage emergency
 {% endblock %}
 {% block content %}
-This is the contetn
+<ul>
+<li>Emergency name: {{em.name}} </li>
+<li>Emergency desc: {{em.description}} </li>
+<li>Needed_people: {{needed_people}} </li>
+<li>Start_date: {{start_date}} </li>
+<li>Start_date: {{end_date}} </li>
+<li>Active: {{active}} </li>
+</ul>
+<br>
+<a href=/emergencies/close> Close emergency</a>
+
 {% endblock %}
