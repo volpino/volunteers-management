@@ -138,16 +138,38 @@ def event_desc(request):
 @login_required
 def my_events(request):
     user = request.user
+    organization = is_organization(user)
+    member = is_member(user)
+    volunteer = is_volunteer(user)
     qset = (Q(user__exact=user))
-    member = Member.objects.filter(qset)[0]
-    evs = Event.objects.filter(member=member)
-    return render_to_response("events/myevents.html", locals())
+    mem = Member.objects.filter(qset)
+    if mem:
+        evs = Event.objects.filter(member=mem[0])
+        return render_to_response("events/myevents.html", locals())
+    else:
+        return HttpRedirectResponse("/")
 
 def event_overview(request):
-    pass
+    ems_open = Emergency.objects.filter(Q(active=True))
+    result = {}
+    for ems in ems_open:
+        qset = (Q(emergency__exact=ems))
+        result[ems] = Event.objects.filter(qset)
+    return render_to_response("events/overview.html", locals())
 
 def my_task(request):
-    pass
+    organization = is_organization(user)
+    member = is_member(user)
+    volunteer = is_volunteer(user)
+    qset = (Q(user__exact=user))
+    vol = Member.objects.filter(qset)
+    evs_open = Event.objects.filter(active=True)
+    evs = None
+    for ev in evs_open:
+        if vol in ev.volunteers:
+            evs = ev
+            break
+    return HttpResponseRedirect("/events/description/?id=%d" % evs.pk)
 
 def members_manage(reuqest):
     pass
@@ -156,10 +178,9 @@ def emergency_manage(request):
     pass
 
 def emergency_overview(request):
-    ems_open = Emergency.object.filter(Q(active=True))
-    ems_closed = Emergency.object.filter(Q(active=False))
-    return render_to_response("events/create.html", locals(),
-                              context_instance=RequestContext(request))
+    ems_open = Emergency.objects.filter(Q(active=True))
+    ems_closed = Emergency.objects.filter(Q(active=False))
+    return render_to_response("emergencies/overview.html", locals())
 
 
 def emergency_join(request):
