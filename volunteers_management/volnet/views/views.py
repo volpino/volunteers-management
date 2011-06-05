@@ -181,7 +181,7 @@ def event_desc(request):
     ev_id  = request.GET.get("id")
     ev = None
     if ev_id:
-        ev = Event.objects.filter(Q(pk__exact=ev_id))
+        ev = Event.objects.filter(Q(pk__exact=ev_id))[0]
         if ev and (volunteer or member or organization):
             owner = False
             if member:
@@ -206,6 +206,10 @@ def my_events(request):
         return HttpResponseForbidden()
 
 def event_overview(request):
+    user = request.user
+    organization = is_organization(user)
+    member = is_member(user)
+    volunteer = is_volunteer(user)
     ems_open = Emergency.objects.filter(Q(active=True))
     result = []
     for ems in ems_open:
@@ -233,7 +237,7 @@ def my_task(request):
         return render_to_response("events/mytask.html", locals())
 
 def members_manage(reuqest):
-    pass
+    return HttpResponseRedirect("/")
 
 @login_required
 def emergency_manage(request):
@@ -268,7 +272,7 @@ def my_emergencies(request):
         if org: #should always be true
             ems = Emergency.objects.filter(Q(active__exact=True))
             ems = ems.filter(Q(organization__exact=org))
-            if ems: return render_to_response("emergencies/my_emergencies.html",
+            if ems: return render_to_response("emergencies/myemergencies.html",
                                              locals())
     return HttpResponseForbidden()
 

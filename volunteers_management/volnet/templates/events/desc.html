@@ -5,13 +5,14 @@ Event description
 {% block content %}
 
 <ul style="list-syle-type: none">
-<li> Emergecy: {{ev.emergecy}} 
-Volunteers:
-<ol> 
-{% for vol in ev.volunteers %}
-   <li> vol.name </li>
-{% endfor %}
-</ol>
+    <li> Emergency: {{ev.emergency}}</li>
+    <li>Volunteers:
+    <ol>
+        {% for vol in ev.volunteers.all %}
+            <li><a href="/volunteers/{{vol.user.pk}}/">{{vol.user}}</a></li>
+        {% endfor %}
+    </ol>
+    </li>
 <li> Start date: {{ev.start_date}}</li>
 <li> End date: {{ev.end_date}}</li>
 <li> Description: {{ev.description}}</li>
