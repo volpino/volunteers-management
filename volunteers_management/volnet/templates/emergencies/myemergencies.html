@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content_title %}
+My emergencies
+{% endblock %}
+{% block content %}
+<ul>
+    {% for myeme in ems %}
+    <li><a href="/emergencies/manage/?id={{myeme.pk}}">{{myeme.name}}</a></li>
+    {% endfor %}
+</ul>
+{% endblock %}

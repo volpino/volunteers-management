@@ -43,11 +43,6 @@ Released   : 20100729
 			</div>
 		</div>
     </div>
-    {% if organization or member or volunteer%}
-    <h2>Hello {{user}}</h2>
-    {% else %}
-    <h2>Welcome!</h2>
-    {% endif %}
 	<!-- end #header -->
 	<div id="page">
         <div id="content">
@@ -61,15 +56,18 @@ Released   : 20100729
 		<div id="sidebar">
         {% if organization%}
         <ul>
+            <p><b>Hello {{user}}!</b></p>
+            <p><b>Oganization</b></p>
             <li><a href="/emergencies/overview">Emergencies</a></li>
-            <li><a href="/emergencies/open">My Emergencies</a></li>
+            <li><a href="/emergencies/myemergencies">My Emergencies</a></li>
             <li><a href="/emergencies/create">Create Emergency</a></li>
-            <li><a href="/emergencies/manage">Manage Emergencies</a></li>
             <li><a href="/members/manage">Manage Members</a></li>
             <li><a href="/accounts/password/change">Change password</a></li>
         </ul>
         {% else %}{% if member %}
         <ul>
+            <p><b>Hello {{user}}!</b></p>
+            <p><b>Member</b></p>
             <li><a href="/emergencies/overview">Emergencies</a></li>
             <li><a href="/events/overview">My events</a></li>
             <li><a href="/events/create">Create event</a></li>
@@ -77,12 +75,15 @@ Released   : 20100729
         </ul>
         {% else %}{% if volunteer %}
         <ul>
+            <p><b>Hello {{user}}!</b></p>
+            <p><b>Volunteer</b></p>
             <li><a href="/emergencies/overview">Emergencies</a></li>
             <li><a href="/events/overview">Task</a></li>
             <li><a href="/accounts/password/change">Change password</a></li>
         </ul>
         {% else %}
         <ul>
+            <p><b>Welcome</b></p>
             <li><a href="/accounts/register">Sign up as a Volunteer</a></li>
             <li><a href="/emergencies/overview">Emergencies</a></li>
         </ul>
