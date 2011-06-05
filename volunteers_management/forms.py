@@ -14,13 +14,13 @@ LEVEL_CHOICES = (
 
 
 class VolunteerInfoForm(forms.Form):
-    first_name = forms.RegexField(regex=r'^[a-zA-Z]+$',
+    first_name = forms.RegexField(regex=r'^[a-zA-Z ]+$',
                                   max_length=100,
                                   widget=forms.TextInput(),
                                   label="First Name",
                                   required = True,
                                   error_messages={'invalid': "This value must contain only letters"})
-    last_name = forms.RegexField(regex=r'^[a-zA-Z]+$',
+    last_name = forms.RegexField(regex=r'^[a-zA-Z ]+$',
                                  max_length=100,
                                  widget=forms.TextInput(),
                                  label="Last Name",
@@ -50,7 +50,7 @@ class VolunteerInfoForm(forms.Form):
     social = forms.ChoiceField(choices=LEVEL_CHOICES,
                                label="Social skills",
                                required=True)
-    location = forms.CharField(label="Location place (*)")
+    location = forms.CharField(label="Location place (*)", required=False)
     lat = forms.FloatField(label="Location latitude", required=True)
     lon = forms.FloatField(label="Location longitude", required=True)
 
@@ -103,7 +103,7 @@ class NewEmergencyForm(forms.Form):
                                        required=True)
     end_date = forms.DateField(label="Estimated deadline",
                                required=False)
-    location = forms.CharField(label="Emergency place (*)")
+    location = forms.CharField(label="Emergency place (*)", required=False)
     lat = forms.FloatField(label="Emergency latitude", required=True)
     lon = forms.FloatField(label="Emergency longitude", required=True)
 
@@ -143,7 +143,7 @@ def create_event_form(member):
                                      choices=LEVEL_CHOICES, required=True)
         end_date = forms.DateField(label="Estimated deadline",
                                    required=False)
-        location = forms.CharField(label="Event place (*)")
+        location = forms.CharField(label="Event place (*)", required=False)
         lat = forms.FloatField(label="Event latitude", required=True)
         lon = forms.FloatField(label="Event longitude", required=True)
 

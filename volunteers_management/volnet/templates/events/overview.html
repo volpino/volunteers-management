@@ -4,8 +4,13 @@ Events overview
 {% endblock %}
 {% block content %}
 <ul>
-    {% for eve in ems_open %}
-    <li><a href=/events/overview/?id={{eve.pk}}>{{eve.name}}</a></li>
+    {% for emergency, evs in result %}
+    <li><b><a href="/emergencies/description/?id={{emergency.pk}}">{{emergency}}</a></b></li>
+        <ul>
+        {% for ev in evs %}
+            <li><a href=/events/description/?id={{ev.pk}}>{{ev.name}}</a></li>
+        {% endfor %}
+        </ul>
     {% endfor %}
 </ul>
 {% endblock %}

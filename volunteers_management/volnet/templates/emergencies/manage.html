@@ -3,5 +3,17 @@
 Manage emergency
 {% endblock %}
 {% block content %}
-This is the contetn
+<ul>
+    <li>Emergency name: {{em.name}} </li>
+    <li>Organization: {{em.organization}}</li>
+    <li>Emergency desc: {{em.description}} </li>
+    <li>Needed_people: {{needed_people}} </li>
+    <li>Volunteers: {{len(em.volunteers.all())}}</li>
+    <li>Active: {{active}} </li>
+</ul>
+
+<ul>
+<li><a href="/emergencies/close/?id={{em.pk}}"> Close emergency </a></li>
+<li><a href="/emergencies/call_volunteers/?id={{em.pk}}"> Call volunteers </a> </li>
+</ul>
 {% endblock %}
