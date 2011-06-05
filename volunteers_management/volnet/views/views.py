@@ -183,6 +183,11 @@ def event_desc(request):
     if ev_id:
         ev = Event.objects.filter(Q(pk__exact=ev_id))
         if ev and (volunteer or member or organization):
+            owner = False
+            if member:
+                mem = Member.objects.filter(Q(user__exact=user))[0]
+                if mem == ev.member:
+                    owner = True
             return render_to_response("events/desc.html", locals())
     return HttpResponseForbidden()
 
