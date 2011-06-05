@@ -4,7 +4,7 @@ Events overview
 {% endblock %}
 {% block content %}
 <ul>
-    {% for eve in #### %}
+    {% for eve in ems_open %}
     <li><a href=/events/overview/?id={{eve.pk}}>{{eve.name}}</a></li>
     {% endfor %}
 </ul>

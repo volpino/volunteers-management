@@ -31,6 +31,7 @@ urlpatterns = patterns('',
     url(r'^emergencies/description/', emergency_desc), #template emergencies/desc.html  link 'join' ->!!!
     url(r'^emergencies/manage/', emergency_manage), # link a emergency_close
     url(r'^emergencies/overview/$', emergency_overview), #elenco delle emergencies, per tutti
+    url(r'^emergencies/myemergencies/$', my_emergencies), #elenco delle emergencies aperte da organization
 
     url(r'^events/create/$', new_event), #for the member
     url(r'^events/description/', event_desc), #for organization and the member and the volunteers; se sei member da qui lo puoi chiudere!
