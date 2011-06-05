@@ -117,6 +117,7 @@ class NewEmergencyForm(forms.Form):
                            description=self.cleaned_data["description"],
                            needed_people=self.cleaned_data["needed_people"],
                            end_date=self.cleaned_data["end_date"],
+                           start_date="2011-01-01",
                            lat=self.cleaned_data["lat"],
                            lon=self.cleaned_data["lon"],
                            active=True,

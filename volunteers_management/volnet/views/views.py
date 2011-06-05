@@ -164,7 +164,8 @@ def new_event(request):
             return HttpResponseRedirect("/")
     else:
         form = f()
-    return render_to_response("events/create.html", locals())
+    return render_to_response("events/create.html", locals(),
+                              context_instance=RequestContext(request))
 
 @login_required
 def event_desc(request):
@@ -180,7 +181,7 @@ def event_desc(request):
     ev = None
     if ev_id:
         ev = Event.objects.filter(Q(pk__exact=ev_id))
-        if ev and (volontario or member or organization):
+        if ev and (volunteer or member or organization):
             return render_to_response("events/desc.html", locals())
     return HttpResponseForbidden()
 
