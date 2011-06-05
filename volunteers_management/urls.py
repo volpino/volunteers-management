@@ -33,7 +33,8 @@ urlpatterns = patterns('',
     url(r'^emergencies/overview/$', emergency_overview), #elenco delle emergencies, per tutti
 
     url(r'^events/create/$', new_event), #for the member
-    url(r'^events/description/', event_desc), #for organization and the member and the volunteers
+    url(r'^events/description/', event_desc), #for organization and the member and the volunteers; se sei member da qui lo puoi chiudere!
+    url(r'^events/close/', event_close), #non c'e` template
     url(r'^events/myevents/$', my_events),  #for the member
     url(r'^events/overview/$', event_overview), #list of events, per l'organization
     url(r'^events/mytask/$', my_task), #for the volunteer ; c'e` dentro il tasto 'leave'
