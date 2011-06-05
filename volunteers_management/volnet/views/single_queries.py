@@ -8,28 +8,32 @@ from volnet.views.views import *
 def emergency_desc(request):
     #following variables are passed to the template
     user = request.user
-    organization = is_organization(user)
-    member = is_member(user)
-    volunteer = is_volunteer(user)
+    volunteer = None
+    member = None
+    organization = None
+    if user.is_authenticated():
+        volunteer = is_volunteer(user)
+        member = is_member(user)
+        organization = is_organization(user)
     em = None
     enroled = False
 
     query = request.GET.get("id")
     if query:
-        em = Emergency.get(pk=query)
-    if is_volunteer(user) and em:
+        em = Emergency.objects.get(pk=query)
+    if volunteer and em:
         qset = (Q(user__exact=user))
         vol = Volunteer.objects.filter(qset)
         if vol in em.volunteers:
             enroled = True
-    render_to_response("emergencies/desc.html", locals())
+    return render_to_response("emergencies/desc.html", locals())
 
 def event(request):
     query = request.GET.get("id")
     event = None
     if query:
         event = Emergency.get(pk=query)
-    render_to_response("events/desc.html", locals())
+    return render_to_response("events/desc.html", locals())
 
 @login_required
 def new_emergency(request):
