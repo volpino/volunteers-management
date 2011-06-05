@@ -56,8 +56,7 @@ Released   : 20100729
 		<div id="sidebar">
         {% if organization%}
         <ul>
-            <p><b>Hello {{user}}!</b></p>
-            <p><b>Oganization</b></p>
+            <p><b>Hello {{user}}!</b><br/><i>Oganization</i></p>
             <li><a href="/emergencies/overview">Emergencies</a></li>
             <li><a href="/emergencies/myemergencies">My Emergencies</a></li>
             <li><a href="/emergencies/create">Create Emergency</a></li>
@@ -66,8 +65,7 @@ Released   : 20100729
         </ul>
         {% else %}{% if member %}
         <ul>
-            <p><b>Hello {{user}}!</b></p>
-            <p><b>Member</b></p>
+            <p><b>Hello {{user}}!</b><br/><i>Member</i></p>
             <li><a href="/emergencies/overview">Emergencies</a></li>
             <li><a href="/events/overview">My events</a></li>
             <li><a href="/events/create">Create event</a></li>
@@ -75,15 +73,14 @@ Released   : 20100729
         </ul>
         {% else %}{% if volunteer %}
         <ul>
-            <p><b>Hello {{user}}!</b></p>
-            <p><b>Volunteer</b></p>
+            <p><b>Hello {{user}}!</b><br/><i>Volunteer</i></p>
             <li><a href="/emergencies/overview">Emergencies</a></li>
             <li><a href="/events/overview">Task</a></li>
             <li><a href="/accounts/password/change">Change password</a></li>
         </ul>
         {% else %}
         <ul>
-            <p><b>Welcome</b></p>
+            <p><b>Welcome!</b></p>
             <li><a href="/accounts/register">Sign up as a Volunteer</a></li>
             <li><a href="/emergencies/overview">Emergencies</a></li>
         </ul>
