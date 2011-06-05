@@ -103,7 +103,7 @@ class NewEmergencyForm(forms.Form):
                                        required=True)
     end_date = forms.DateField(label="Estimated deadline",
                                required=False)
-    location = forms.CharField(label="Emergency place (*)")
+    location = forms.CharField(label="Emergency place (*)", required=False)
     lat = forms.FloatField(label="Emergency latitude", required=True)
     lon = forms.FloatField(label="Emergency longitude", required=True)
 
@@ -143,7 +143,7 @@ def create_event_form(member):
                                      choices=LEVEL_CHOICES, required=True)
         end_date = forms.DateField(label="Estimated deadline",
                                    required=False)
-        location = forms.CharField(label="Event place (*)")
+        location = forms.CharField(label="Event place (*)", required=False)
         lat = forms.FloatField(label="Event latitude", required=True)
         lon = forms.FloatField(label="Event longitude", required=True)
 

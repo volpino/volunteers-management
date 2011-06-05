@@ -7,7 +7,10 @@ Emergency description
 Organization content
 {% else %}{% if member or volunteer %}<!--content displayed to members and volunter account-->
 member / volunteer content
-{% else %}<!--content displayed to non logged users-->
+{% endif %}
+{% endif %}
+
+<!--content displayed to non logged users-->
 <br/>
 <h3>{{em.name}}</h3>
 <ul>
@@ -19,7 +22,6 @@ member / volunteer content
 {% else %}
 {% if volunteer %}
 <a href=/emergencies/join> Join us </a>
-{% endif %}
 {% endif %}
 {% endif %}
 {% endblock %}
