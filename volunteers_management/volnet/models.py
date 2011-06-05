@@ -30,6 +30,7 @@ class Volunteer(models.Model):
         return self.user.username
 
 class VolunteerComment(models.Model):
+    user = models.ForeignKey(User)
     volunteer = models.ForeignKey(Volunteer)
     text = models.TextField("Text")
     feedback = models.NullBooleanField("Feedback")

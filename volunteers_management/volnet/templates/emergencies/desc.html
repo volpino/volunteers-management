@@ -3,13 +3,16 @@
 Emergency description
 {% endblock %}
 {% block content %}
-{% if organization %}<!-->content displayed to organizations account<-->
-This is the content
-CEASEFIRE
-{% else %}{% if member or volunteer %}<!-->content displayed to members and volunter account<-->
-This is the content
-JOIN US / LEAVE
+{% if organization %}<!--content displayed to organizations account-->
+Organization content
+{% else %}{% if member or volunteer %}<!--content displayed to members and volunter account-->
+member / volunteer content
 {% else %}<!--content displayed to non logged users-->
-This is the content
+<h3>{{em.name}}</h3>
+<ul>
+    <li>{{em.description}}</li>
+</ul>
+{% endfor %}
+</ul>
 {% endif %}{% endif %}
 {% endblock %}

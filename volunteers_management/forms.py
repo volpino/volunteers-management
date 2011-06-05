@@ -12,6 +12,12 @@ LEVEL_CHOICES = (
     (5, 5)
 )
 
+FEEDBACK_CHOICES = (
+    (True, "Positive"),
+    (None, "Neutral"),
+    (False, "Negative")
+)
+
 class VolunteerInfoForm(forms.Form):
     first_name = forms.RegexField(regex=r'^[a-zA-Z]+$',
                                   max_length=100,
@@ -69,6 +75,27 @@ class VolunteerInfoForm(forms.Form):
                       available=True)
         v.save()
 
+
+class VolunteerCommentForm(forms.Form):
+    feedback = forms.ChoiceField(label="Feedback",
+                                  choices=FEEDBACK_CHOICES, required=True)
+    text = forms.CharField(widget=forms.Textarea(),
+                           label="Comment", required=True)
+    def save_comment(self, user, vol):
+        v = VolunteerComment(user=user,
+                             volunteer=vol,
+                             text=self.cleaned_data["text"],
+                             feedback=self.cleaned_data["feedback"])
+        v.save()
+
+class EventCommentForm(forms.Form):
+    text = forms.CharField(widget=forms.Textarea(),
+                           label="Comment", required=True)
+    def save_comment(self, ev):
+        v = EventComment(user=user,
+                         event=vol,
+                         text=self.cleaned_data["text"])
+        v.save()
 
 class NewEmergencyForm(forms.Form):
     name = forms.CharField(label="Emergency Name",

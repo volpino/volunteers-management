@@ -95,7 +95,7 @@ def profile(request):
         qset = (Q(user__exact=user))
         vol = Volunteer.objects.filter(qset)
         for em in active_ems:
-            if vol in em.volunteers:
+            if vol in em.volunteers.all():
                 return HttpResponseRedirect("/events/mytasks/")
         return HttpResponseRedirect("/emergencies/overview/")
     elif request.method == "POST":
@@ -147,7 +147,7 @@ def event_desc(request):
         ev = Event.objects.filter(Q(pk__exact=ev_id))
         if ev_id and (volontario or member or organization):
             ev = Event.objects.filter(Q(pk__exact=ev_id))
-            return render_to_response("events/create.html", locals())
+            return render_to_response("events/desc.html", locals())
     return  HttpResponseRedirect("/")
 
 @login_required
@@ -212,8 +212,61 @@ def emergency_join(request):
 def emergency_leave(request):
     pass
 
+def closeevent(event):
+    event.active = False
+    event.save()
+    for vol in event.volunteers.all():
+        vol.available = True
+        vol.save()
+
+def event_close(request):
+    user = request.user
+    organization = is_organization(user)
+    member = is_member(user)
+    volunteer = is_volunteer(user)
+    qset = (Q(user__exact=user))
+    org = Organization.objects.filter(qset)
+    evs_open = Event.objects.filter(active=True)
+    query = request.GET.get("id")
+    if query and org:
+        ev = Event.objects.get(pk=query)
+        if ev:
+            closeevent(ev)
+    return HttpRedirectResponse("/")
+
 def emergency_close(request):
-    pass
+    user = request.user
+    organization = is_organization(user)
+    member = is_member(user)
+    volunteer = is_volunteer(user)
+    qset = (Q(user__exact=user))
+    org = Organization.objects.filter(qset)
+    evs_open = Event.objects.filter(active=True)
+    query = request.GET.get("id")
+    if query and org:
+        em = Emergency.objects.get(pk=query)
+        if em:
+            evs = evs_open.objects.filter(emergency__exact=em)
+            for ev in evs:
+                closeevent(ev)
+    return HttpRedirectResponse("/")
 
 def call_volunteers(request):
     pass
+
+def volunteer_desc(request):
+    user = request.user
+    organization = is_organization(user)
+    member = is_member(user)
+    volunteer = is_volunteer(user)
+    query = request.GET.get("id")
+    vol = None
+    if query:
+        vol = Volunteer.objects.get(pk=query)
+        if request.method == "POST":
+            form = VolunteerCommentForm(request.POST)
+            if form.is_valid():
+                form.save_comment(user, vol)
+    else:
+        form = VolunteerInfoForm()
+    return render_to_response("volunteers/desc.html", locals())

@@ -26,6 +26,8 @@ urlpatterns = patterns('',
     url(r'^emergencies/create/$', new_emergency),
     url(r'^facebook/', include('facebookconnect.urls')),
 
+    url(r'^volunteer/description/', volunteer_desc),
+
     url(r'^emergencies/description/', emergency_desc), #template emergencies/desc.html  link 'join' ->!!!
     url(r'^emergencies/manage/', emergency_manage), # link a emergency_close
     url(r'^emergencies/overview/$', emergency_overview), #elenco delle emergencies, per tutti
