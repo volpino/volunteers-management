@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from volnet.models import *
 from forms import *
 from django.template import RequestContext
+from django.core.mail import send_mail
 
 
 def home(request):
@@ -126,7 +127,7 @@ def emergency_desc(request):
     if volunteer and em:
         qset = (Q(user__exact=user))
         vol = Volunteer.objects.filter(qset)
-        if vol in em.volunteers:
+        if vol in em.volunteers.all():
             enroled = True
     return render_to_response("emergencies/desc.html", locals())
 
@@ -201,10 +202,10 @@ def my_events(request):
 
 def event_overview(request):
     ems_open = Emergency.objects.filter(Q(active=True))
-    result = {}
+    result = []
     for ems in ems_open:
         qset = (Q(emergency__exact=ems))
-        result[ems] = Event.objects.filter(qset)
+        result.append((ems, Event.objects.filter(qset)))
     return render_to_response("events/overview.html", locals())
 
 @login_required
@@ -244,7 +245,7 @@ def emergency_manage(request):
         if em_id:
             ems = Emergency.objects.filter(Q(pk__exact=em_id))
             if ems:
-                em = ems.filter(Q(organization__exact=org))
+                em = ems.filter(Q(organization__exact=org))[0]
                 if em:
                     return render_to_response("emergencies/manage.html",
                                               locals())
@@ -339,11 +340,79 @@ def emergency_close(request):
             evs = evs_open.filter(emergency__exact=em)
             for ev in evs:
                 closeevent(ev)
-                return HttpRedirectResponse("/")
+                return HttpResponseRedirect("/")
     return HttpResponseForbidden()
 
 def call_volunteers(request):
-    pass
+    user = request.user
+    organization = is_organization(user)
+    member = is_member(user)
+    volunteer = is_volunteer(user)
+    query = request.GET.get("id")
+    if not query:
+        return HttpResponseRedirect("/")
+    selected_em = Emergency.objects.get(pk=query)
+    ems = Emergencies.objects.filter(active__exact=True)
+    vols = Volunteers.objects.all()
+    for em in ems:
+        for v in em.volunteers.all():
+            vols.remove(v)
+    for v in selected_em.volunteers_notified.all():
+        vols.remove(v)
+    lat = selected_em.lat
+    lon = selected_em.lon
+    candidates = []
+    i = 1
+    for vol in vols:
+        if vol.city_lat >= (lat-0.5*i) and vol.city_lat <= (lat+0.5*i) and \
+           vol.city_lon >= (lon-0.5*i) and vol.city_lon <= (lon+0.5*i):
+            candidates.append(vol)
+        if len(candidates) >= selected_em.needed_people:
+            break
+
+def notify_emergency(candidates, emergency):
+    for c in candidates:
+        emergency.notified_volunteers.add(c)
+    emils = [c.user.email for c in candidates]
+    send_mail("Notification",
+              "New emergency notification http://%s/emergencies/description/?id=%s" % (Site.objects.get_current().domain, selected_em.pk),
+              "progettomagi@gmail.com",
+              emails)
+
+def notify_event(candidates, event):
+    for c in candidates:
+        c.available = False
+        c.save()
+        event.volunteers.add(c)
+    emils = [c.user.email for c in candidates]
+    send_mail("Notification",
+              "New event notification",
+              "progettomagi@gmail.com",
+              emails)
+
+def assign_vol_to_event(em):
+    vols = em.volunteers.all()
+    evs = Event.objects.filter(emergency__exact=em)
+    evs_active = evs.filter(active=True)
+    for ev in evs_active:
+        n = ev.needed_people
+        st = ev.skill_type
+        ms = ev.min_skill
+        candidates = []
+        vols_available = vols.filter(available=True)
+        for vol in vols_available:
+            if st == "M":
+                if vol.manual_skill >= ms:
+                    candidates.append(vol)
+            elif st == "E":
+                if vol.medical_skill >= ms:
+                    candidates.append(vol)
+            elif st == "S":
+                if vol.social_skill >= ms:
+                    candidates.append(vol)
+            if len(candidates) >= n:
+                notify_event(candidates, ev)
+                break
 
 def volunteer_desc(request, query):
     user = request.user
