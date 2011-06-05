@@ -20,10 +20,10 @@ member / volunteer content
 </ul>
 
 {% if volunteer and enroled %}
-<a href="/emergencies/leave"> Leave emergency </a>
+<a href="/emergencies/leave/?id={{em.pk}}"> Leave emergency </a>
 {% else %}
 {% if volunteer %}
-<a href="/emergencies/join"> Join us </a>
+<a href="/emergencies/join/?id={{em.pk}}"> Join us </a>
 {% endif %}
 {% endif %}
 {% endif %}
