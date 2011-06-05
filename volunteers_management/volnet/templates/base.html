@@ -41,7 +41,12 @@ Released   : 20100729
                 </ul>
 			</div>
 		</div>
-	</div>
+    </div>
+    {% if organization or member or volunteer%}
+    <h2>Hello {{user}}</h2>
+    {% else %}
+    <h2>Welcome!</h2>
+    {% endif %}
 	<!-- end #header -->
 	<div id="page">
         <div id="content">
