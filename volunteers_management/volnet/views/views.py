@@ -209,6 +209,7 @@ def event_overview(request):
 
 @login_required
 def my_task(request):
+    user = request.user
     organization = is_organization(user)
     member = is_member(user)
     volunteer = is_volunteer(user)
@@ -228,6 +229,7 @@ def my_task(request):
 def members_manage(reuqest):
     pass
 
+@login_required
 def emergency_manage(request):
     user = request.user
     volunteer = None
@@ -238,8 +240,7 @@ def emergency_manage(request):
         member = is_member(user)
         organization = is_organization(user)
     if organization:
-        org = Organization.objects.filter(Q(user__exact=user))
-        org = org[0]
+        org = Organization.objects.filter(Q(user__exact=user))[0]
         em_id  = request.GET.get("id")
         if em_id:
             ems = Emergency.objects.filter(Q(pk__exact=em_id))
@@ -248,6 +249,21 @@ def emergency_manage(request):
                 if em:
                     return render_to_response("emergencies/manage.html",
                                               locals())
+    return HttpResponseForbidden()
+
+@login_required
+def my_emergencies(request):
+    user = request.user
+    organization = is_organization(user)
+    member = is_member(user)
+    volunteer = is_volunteer(user)
+    if organization:
+        org = Organization.objects.filter(Q(user__exact=user))[0]
+        if org: #should always be true
+            ems = Emergency.objects.filter(Q(active__exact=True))
+            ems = ems.filter.(Q(organization__exact=org))
+            if ems return render_to_response("emergencies/my_emergencies.html",
+                                             locals())
     return HttpResponseForbidden()
 
 def emergency_overview(request):
