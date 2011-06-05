@@ -4,8 +4,8 @@ Events overview
 {% endblock %}
 {% block content %}
 <ul>
-    {% for %}
-    <li><a href=/events/overview.html?id={#.pk}>{emerg.name}</a></li>
+    {% for eve in #### %}
+    <li><a href=/events/overview/?id={{eve.pk}}>{{eve.name}}</a></li>
     {% endfor %}
 </ul>
 {% endblock %}
