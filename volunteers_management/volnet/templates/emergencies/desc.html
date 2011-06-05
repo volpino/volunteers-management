@@ -13,5 +13,13 @@ member / volunteer content
 <ul>
     <li>{{em.description}}</li>
 </ul>
-{% endif %}{% endif %}
+
+{% if volunteer and enroled %}
+<a href=/emergencies/leave> Leave emergency </a>
+{% else %}
+{% if volunteer %}
+<a href=/emergencies/join> Join us </a>
+{% endif %}
+{% endif %}
+
 {% endblock %}
