@@ -4,14 +4,16 @@ Manage emergency
 {% endblock %}
 {% block content %}
 <ul>
-<li>Emergency name: {{em.name}} </li>
-<li>Emergency desc: {{em.description}} </li>
-<li>Needed_people: {{needed_people}} </li>
-<li>Start_date: {{start_date}} </li>
-<li>End_date: {{end_date}} </li>
-<li>Active: {{active}} </li>
+    <li>Emergency name: {{em.name}} </li>
+    <li>Organization: {{em.organization}}</li>
+    <li>Emergency desc: {{em.description}} </li>
+    <li>Needed_people: {{needed_people}} </li>
+    <li>Volunteers: {{len(em.volunteers.all())}}</li>
+    <li>Active: {{active}} </li>
 </ul>
-<br>
-<a href=/emergencies/close> Close emergency</a>
 
+<ul>
+<li><a href="/emergencies/close/?id={{em.pk}}"> Close emergency </a></li>
+<li><a href="/emergencies/call_volunteers/?id={{em.pk}}"> Call volunteers </a> </li>
+</ul>
 {% endblock %}

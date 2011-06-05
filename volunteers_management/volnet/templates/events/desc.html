@@ -5,6 +5,7 @@ Event description
 {% block content %}
 
 <ul style="list-syle-type: none">
+
     <li> Emergency: {{ev.emergency}}</li>
     <li>Volunteers:
     <ol>
@@ -13,14 +14,13 @@ Event description
         {% endfor %}
     </ol>
     </li>
-<li> Start date: {{ev.start_date}}</li>
-<li> End date: {{ev.end_date}}</li>
-<li> Description: {{ev.description}}</li>
-<li> Active: {{ev.active}} </li>
+    <li> End date: {{ev.end_date}}</li>
+    <li> Description: {{ev.description}}</li>
+    <li> Active: {{ev.active}} </li>
 </ul>
 
 {% if owner %}
 <br>
-<a href=events/close> Close event </a>
+<a href="/events/close"> Close event </a>
 {% endif %}
 {% endblock %}
