@@ -84,10 +84,10 @@ def profile(request):
         return HttpResponseRedirect("/events/myevents/")
     elif volunteer:
         active_ems = Emergency.objects.filter(Q(active=True))
-        vol = Volunteer.objects.filter(Q(user__exact=user))
+        vol = Volunteer.objects.filter(Q(user__exact=user))[0]
         for em in active_ems:
             if vol in em.volunteers.all():
-                return HttpResponseRedirect("/events/mytasks/")
+                return HttpResponseRedirect("/events/mytask/")
         return HttpResponseRedirect("/emergencies/overview/")
     elif request.method == "POST":
         form = VolunteerInfoForm(request.POST)
@@ -292,22 +292,28 @@ def emergency_overview(request):
 
 @login_required
 def emergency_join(request):
+    user = request.user
     if user.is_authenticated():
         if is_volunteer(user):
             active_ems = Emergency.objects.filter(Q(active=True))
-            vol = Volunteer.objects.filter(Q(user__exact=user))
+            vol = Volunteer.objects.filter(Q(user__exact=user))[0]
             free_vol=True
+            print 1
             for em in active_ems:
-                if not(vol in em.volunteers):
+                if vol in em.volunteers.all():
                     free_vol=False
+                    print em, vol
                     break
             if free_vol:
                 em_id  = request.GET.get("id")
                 if em_id:
                     em = Emergency.objects.filter(Q(pk__exact=em_id))
                     if em:
+                        print 3
                         em = em[0]
                         em.volunteers.add(vol)
+                        em.save()
+                        return HttpResponseRedirect("/")
     return HttpResponseForbidden()
 
 @login_required
