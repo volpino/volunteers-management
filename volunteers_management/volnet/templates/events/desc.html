@@ -5,15 +5,13 @@ Event description
 {% block content %}
 
 <ul style="list-syle-type: none">
-<li> Emergecy: {{ev.emergecy}} 
+<li> Emergecy: {{ev.emergecy.name}} 
 Volunteers:
 <ol> 
 {% for vol in ev.volunteers %}
    <li> vol.name </li>
 {% endfor %}
 </ol>
-<li> Start date: {{ev.start_date}}</li>
-<li> End date: {{ev.end_date}}</li>
 <li> Description: {{ev.description}}</li>
 <li> Active: {{ev.active}} </li>
 </ul>
