@@ -12,11 +12,6 @@ LEVEL_CHOICES = (
     (5, 5)
 )
 
-FEEDBACK_CHOICES = (
-    (True, "Positive"),
-    (None, "Neutral"),
-    (False, "Negative")
-)
 
 class VolunteerInfoForm(forms.Form):
     first_name = forms.RegexField(regex=r'^[a-zA-Z]+$',

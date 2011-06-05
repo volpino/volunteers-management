@@ -244,7 +244,6 @@ def emergency_leave(request):
                     em = em[0]
                     em.volunteers.remove(vol)
     return HttpRedirectResponse("/")
-    
 
 def closeevent(event):
     event.active = False
@@ -288,19 +287,23 @@ def emergency_close(request):
 def call_volunteers(request):
     pass
 
-def volunteer_desc(request):
+def volunteer_desc(request, query):
     user = request.user
     organization = is_organization(user)
     member = is_member(user)
     volunteer = is_volunteer(user)
-    query = request.GET.get("id")
     vol = None
+    comments = None
+    form = None
     if query:
-        vol = Volunteer.objects.get(pk=query)
+        u = User.objects.get(pk=query)
+        vol = Volunteer.objects.filter(user__exact=u)[0]
+        comments = VolunteerComment.objects.filter(volunteer=vol)
         if request.method == "POST":
             form = VolunteerCommentForm(request.POST)
             if form.is_valid():
                 form.save_comment(user, vol)
-    else:
-        form = VolunteerInfoForm()
-    return render_to_response("volunteers/desc.html", locals())
+        else:
+            form = VolunteerCommentForm()
+    return render_to_response("volunteers/desc.html", locals(),
+                              context_instance=RequestContext(request))

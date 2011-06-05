@@ -13,6 +13,12 @@ SKILLS_CHOICES = (
     ('S', 'Social skills')
 )
 
+FEEDBACK_CHOICES = (
+    (True, "Positive"),
+    (None, "Neutral"),
+    (False, "Negative")
+)
+
 
 class Volunteer(models.Model):
     user = models.OneToOneField(User, unique=True)
@@ -33,7 +39,7 @@ class VolunteerComment(models.Model):
     user = models.ForeignKey(User)
     volunteer = models.ForeignKey(Volunteer)
     text = models.TextField("Text")
-    feedback = models.NullBooleanField("Feedback")
+    feedback = models.NullBooleanField("Feedback", choices=FEEDBACK_CHOICES)
 
 class Organization(models.Model):
     user = models.OneToOneField(User, unique=True)

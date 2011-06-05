@@ -8,11 +8,10 @@ Organization content
 {% else %}{% if member or volunteer %}<!--content displayed to members and volunter account-->
 member / volunteer content
 {% else %}<!--content displayed to non logged users-->
+<br/>
 <h3>{{em.name}}</h3>
 <ul>
     <li>{{em.description}}</li>
-</ul>
-{% endfor %}
 </ul>
 {% endif %}{% endif %}
 {% endblock %}
