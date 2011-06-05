@@ -7,9 +7,9 @@ Manage emergency
     <li>Emergency name: {{em.name}} </li>
     <li>Organization: {{em.organization}}</li>
     <li>Emergency desc: {{em.description}} </li>
-    <li>Needed_people: {{needed_people}} </li>
-    <li>Volunteers: {{len(em.volunteers.all())}}</li>
-    <li>Active: {{active}} </li>
+    <li>Needed people: {{em.needed_people}} </li>
+    <li>Volunteers: {{em.volunteers.all|length}}</li>
+    <li>Active: {{em.active}} </li>
 </ul>
 
 <ul>

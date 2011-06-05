@@ -6,9 +6,14 @@ from volnet.models import *
 from forms import *
 from django.template import RequestContext
 from django.core.mail import send_mail
+from django.contrib.sites.models import Site
 
 
 def home(request):
+    ems_open = Emergency.objects.filter(active=True)
+    for em in ems_open:
+        assign_vol_to_event(em)
+
     #chiama funzione che assegna i volontari
     user = request.user
     if user.is_authenticated():
@@ -77,7 +82,7 @@ def profile(request):
         qset = (Q(active=True))
         ems = all_ems.filter(qset)
         if ems:
-            return HttpResponseRedirect("/events/overview/")
+            return HttpResponseRedirect("/emergencies/myemergencies/")
         else:
             return HttpResponseRedirect("/emergencies/create/")
     elif member:
@@ -126,7 +131,7 @@ def emergency_desc(request):
         em = Emergency.objects.get(pk=query)
     if volunteer and em:
         qset = (Q(user__exact=user))
-        vol = Volunteer.objects.filter(qset)
+        vol = Volunteer.objects.filter(qset)[0]
         if vol in em.volunteers.all():
             enroled = True
     return render_to_response("emergencies/desc.html", locals())
@@ -142,6 +147,7 @@ def new_emergency(request):
             form = NewEmergencyForm(request.POST)
             if form.is_valid():
                 form.save_emergency(user)
+                return HttpResponseRedirect("/")
         else:
             form = NewEmergencyForm()
         return render_to_response("emergencies/create.html", locals(),
@@ -298,18 +304,15 @@ def emergency_join(request):
             active_ems = Emergency.objects.filter(Q(active=True))
             vol = Volunteer.objects.filter(Q(user__exact=user))[0]
             free_vol=True
-            print 1
             for em in active_ems:
                 if vol in em.volunteers.all():
                     free_vol=False
-                    print em, vol
                     break
             if free_vol:
                 em_id  = request.GET.get("id")
                 if em_id:
                     em = Emergency.objects.filter(Q(pk__exact=em_id))
                     if em:
-                        print 3
                         em = em[0]
                         em.volunteers.add(vol)
                         em.save()
@@ -318,15 +321,18 @@ def emergency_join(request):
 
 @login_required
 def emergency_leave(request):
+    user = request.user
     if user.is_authenticated():
         if is_volunteer(user):
-            vol = Volunteer.objects.filter(Q(user__exact=user))
+            vol = Volunteer.objects.filter(Q(user__exact=user))[0]
             em_id  = request.GET.get("id")
             if em_id:
                 em = Emergency.objects.filter(Q(pk__exact=em_id))
                 if em:
                     em = em[0]
                     em.volunteers.remove(vol)
+                    em.save()
+                    return HttpResponseRedirect("/")
     return HttpResponseForbidden()
 
 
@@ -345,12 +351,12 @@ def event_close(request):
     member = is_member(user)
     volunteer = is_volunteer(user)
     qset = (Q(user__exact=user))
-    mem = Members.objects.filter(qset)[0]
+    mem = Member.objects.filter(qset)[0]
     #evs_open = Event.objects.filter(active=True)
     ev_id = request.GET.get("id")
     if ev_id:
         ev = Event.objects.get(pk=ev_id)
-        if ev and (mem in ev.member.all()):
+        if ev and (mem == ev.member):
             closeevent(ev)
             return HttpResponseRedirect("/")
     return HttpResponseForbidden()
@@ -362,16 +368,18 @@ def emergency_close(request):
     member = is_member(user)
     volunteer = is_volunteer(user)
     qset = (Q(user__exact=user))
-    org = Organization.objects.filter(qset)
+    org = Organization.objects.filter(qset)[0]
     evs_open = Event.objects.filter(active=True)
     query = request.GET.get("id")
     if query and org:
-        em = Emergency.objects.get(pk=query)[0]
-        if em:
+        em = Emergency.objects.get(pk=query)
+        if em and em.organization == org:
             evs = evs_open.filter(emergency__exact=em)
             for ev in evs:
                 closeevent(ev)
-                return HttpResponseRedirect("/")
+        em.active = False
+        em.save()
+        return HttpResponseRedirect("/")
     return HttpResponseForbidden()
 
 def call_volunteers(request):
@@ -383,30 +391,34 @@ def call_volunteers(request):
     if not query:
         return HttpResponseRedirect("/")
     selected_em = Emergency.objects.get(pk=query)
-    ems = Emergencies.objects.filter(active__exact=True)
-    vols = Volunteers.objects.all()
+    ems = Emergency.objects.filter(active__exact=True)
+    vols = [v for v in Volunteer.objects.all()]
     for em in ems:
         for v in em.volunteers.all():
             vols.remove(v)
-    for v in selected_em.volunteers_notified.all():
+    for v in selected_em.notified_volunteers.all():
         vols.remove(v)
     lat = selected_em.lat
     lon = selected_em.lon
     candidates = []
-    i = 1
-    for vol in vols:
-        if vol.city_lat >= (lat-0.5*i) and vol.city_lat <= (lat+0.5*i) and \
-           vol.city_lon >= (lon-0.5*i) and vol.city_lon <= (lon+0.5*i):
-            candidates.append(vol)
-        if len(candidates) >= selected_em.needed_people:
+    n = selected_em.needed_people - len(selected_em.volunteers.all())
+    for i in range(1, 360):
+        for vol in vols:
+            if vol.city_lat >= (lat-0.5*i) and vol.city_lat <= (lat+0.5*i) and \
+               vol.city_lon >= (lon-0.5*i) and vol.city_lon <= (lon+0.5*i):
+                if not vol in candidates:
+                    candidates.append(vol)
+        if len(candidates) >= n:
             break
+    notify_emergency(candidates, selected_em)
+    return render_to_response("emergencies/called.html", locals())
 
 def notify_emergency(candidates, emergency):
     for c in candidates:
         emergency.notified_volunteers.add(c)
-    emils = [c.user.email for c in candidates]
+    emails = [c.user.email for c in candidates]
     send_mail("Notification",
-              "New emergency notification http://%s/emergencies/description/?id=%s" % (Site.objects.get_current().domain, selected_em.pk),
+              "New emergency notification http://%s/emergencies/description/?id=%s" % (Site.objects.get_current().domain, emergency.pk),
               "progettomagi@gmail.com",
               emails)
 
@@ -415,7 +427,7 @@ def notify_event(candidates, event):
         c.available = False
         c.save()
         event.volunteers.add(c)
-    emils = [c.user.email for c in candidates]
+    emails = [c.user.email for c in candidates]
     send_mail("Notification",
               "New event notification",
               "progettomagi@gmail.com",

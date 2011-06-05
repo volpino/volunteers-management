@@ -7,9 +7,13 @@ Events overview
     {% for emergency, evs in result %}
     <li><b><a href="/emergencies/description/?id={{emergency.pk}}">{{emergency}}</a></b></li>
         <ul>
-        {% for ev in evs %}
-            <li><a href=/events/description/?id={{ev.pk}}>{{ev.name}}</a></li>
-        {% endfor %}
+            {% for ev in evs %}
+                <li>
+                {% if not ev.active %}<strike>{% endif %}
+                <a href=/events/description/?id={{ev.pk}}>{{ev.name}}</a>
+                {% if not ev.active %}</strike>{% endif %}
+                </li>
+            {% endfor %}
         </ul>
     {% endfor %}
 </ul>

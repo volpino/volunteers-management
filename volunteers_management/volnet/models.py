@@ -48,7 +48,8 @@ class Organization(models.Model):
     def __unicode__(self):
         return self.name
 
-class Member(Volunteer):
+class Member(models.Model):
+    user = models.ForeignKey(User)
     organization = models.ForeignKey(Organization)
 
 class Emergency(models.Model):

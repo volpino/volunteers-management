@@ -6,7 +6,7 @@ Event description
 
 <ul style="list-syle-type: none">
 
-    <li> Emergency: {{ev.emergency}}</li>
+    <li>Emergency: {{ev.emergency}}</li>
     <li>Volunteers:
     <ol>
         {% for vol in ev.volunteers.all %}
@@ -16,11 +16,36 @@ Event description
     </li>
     <li> End date: {{ev.end_date}}</li>
     <li> Description: {{ev.description}}</li>
-    <li> Active: {{ev.active}} </li>
+    <li> Active: {%if ev.active%}Yes{%else%}No{%endif%} </li>
 </ul>
 
-{% if owner %}
+<div id="map" style="width:400px; height:300px" class="smallmap"></div>
+<script src="http://openlayers.org/api/OpenLayers.js"></script>
+<script type="text/javascript">
+    var vector_layer;
+    var defaultStyle = new OpenLayers.Style({
+                                    graphicName: "circle",
+                                    strokeColor: "#ff0000",
+                                    fillColor: "#ff0000",
+                                    pointRadius: 5,
+                                    fillOpacity: 0.5,
+                               });
+    function init(){
+        map = new OpenLayers.Map('map');
+        var point = new OpenLayers.Geometry.Point({{ev.lon}}, {{ev.lat}});
+        point = point.transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));
+        var ol_wms = new OpenLayers.Layer.OSM();
+        vector_layer = new OpenLayers.Layer.Vector("point", {styleMap: defaultStyle});
+        map.addLayers([ol_wms, vector_layer]);
+        vector_layer.addFeatures([new OpenLayers.Feature.Vector(point)]);
+        map.setCenter(new OpenLayers.LonLat(0,0), 1);
+    }
+    init();
+</script>
+
+
+{% if owner and ev.active %}
 <br>
-<a href="/events/close"> Close event </a>
+<a href="/events/close/?id={{ev.pk}}"> Close event </a>
 {% endif %}
 {% endblock %}

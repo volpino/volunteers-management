@@ -5,14 +5,15 @@ New event
 {% endblock %}
 
 {% block content %}
-<p>Please add event data:</p>
+
+<p>Please insert event data</p>
     <form action="." method="POST">
         {{ form.as_p }}
+        <div id="map" style="width:400px; height:400px" class="smallmap"></div>
         <p><input type="submit" value="Submit"></p>
         <p><b>(*) This field is useful only to fill latitude and longitude fields</b></p>
         {% csrf_token %}
     </form>
-</div>
 
 <script type="text/javascript" src="/static/jquery-1.5.js"></script>
 <script type="text/javascript" src="/static/jquery.autocomplete.min.js"></script>
@@ -57,5 +58,63 @@ function attachAutoComplete(expression) {
 attachAutoComplete("#id_location");
 </script>
 
+<script src="http://openlayers.org/api/OpenLayers.js"></script>
+<script type="text/javascript">
+            OpenLayers.Control.Click = OpenLayers.Class(OpenLayers.Control, {
+                defaultHandlerOptions: {
+                    'single': true,
+                    'double': false,
+                    'pixelTolerance': 0,
+                    'stopSingle': false,
+                    'stopDouble': false
+                },
+
+                initialize: function(options) {
+                    this.handlerOptions = OpenLayers.Util.extend(
+                        {}, this.defaultHandlerOptions
+                    );
+                    OpenLayers.Control.prototype.initialize.apply(
+                        this, arguments
+                    ); 
+                    this.handler = new OpenLayers.Handler.Click(
+                        this, {
+                            'click': this.trigger
+                        }, this.handlerOptions
+                    );
+                }, 
+
+                trigger: function(e) {
+                    var lonlat = map.getLonLatFromViewPortPx(e.xy);
+                    $("#id_lat").val(lonlat.lat);
+                    $("#id_lon").val(lonlat.lon);
+                }
+
+            });
+            var map;
+            function init(){
+                map = new OpenLayers.Map('map');
+
+                var ol_wms = new OpenLayers.Layer.WMS( "OpenLayers WMS",
+                    "http://vmap0.tiles.osgeo.org/wms/vmap0?", {layers: 'basic'} );
+
+            var jpl_wms = new OpenLayers.Layer.WMS( "NASA Global Mosaic",
+                "http://t1.hypercube.telascience.org/cgi-bin/landsat7", 
+                {layers: "landsat7"});
+
+                jpl_wms.setVisibility(false);
+
+                map.addLayers([ol_wms, jpl_wms]);
+                map.addControl(new OpenLayers.Control.LayerSwitcher());
+                // map.setCenter(new OpenLayers.LonLat(0, 0), 0);
+                map.zoomToMaxExtent();
+                var click = new OpenLayers.Control.Click();
+                map.addControl(click);
+                click.activate();
+
+            }
+
+            init();
+
+</script>
 
 {% endblock %}

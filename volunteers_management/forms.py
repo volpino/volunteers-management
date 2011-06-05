@@ -126,7 +126,7 @@ class NewEmergencyForm(forms.Form):
 
 def create_event_form(member):
     class NewEventForm(forms.Form):
-        emergency = forms.ModelChoiceField(queryset=Emergency.objects.filter(organization__exact=member.organization))
+        emergency = forms.ModelChoiceField(queryset=Emergency.objects.filter(organization__exact=member.organization, active=True))
         name = forms.CharField(label="Event name",
                                max_length=100,
                                required = True)
@@ -148,12 +148,11 @@ def create_event_form(member):
         lon = forms.FloatField(label="Event longitude", required=True)
 
         def save_event(self):
-            #Quando checko che user sia in effetti un'organization
             qset = (Q(organization__exact=member.organization))
-            emergency = Emergency.objects.filter(qset)
-            if emergency:
+            ems = Emergency.objects.filter(qset)
+            if self.cleaned_data["emergency"] in ems:
                 ev = Event(member=member,
-                           emergency=emergency[0],
+                           emergency=self.cleaned_data["emergency"],
                            name=self.cleaned_data["name"],
                            description=self.cleaned_data["description"],
                            skill_type=self.cleaned_data["skill_type"],

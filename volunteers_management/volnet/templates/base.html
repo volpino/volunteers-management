@@ -56,18 +56,23 @@ Released   : 20100729
 		<div id="sidebar">
         {% if organization%}
         <ul>
-            <p><b>Hello {{user}}!</b><br/><i>Oganization</i></p>
+            <p><b>Hello {{user}}!</b><br/><i>Organization</i></p>
             <li><a href="/emergencies/overview">Emergencies</a></li>
             <li><a href="/emergencies/myemergencies">My Emergencies</a></li>
             <li><a href="/emergencies/create">Create Emergency</a></li>
             <li><a href="/members/manage">Manage Members</a></li>
+            {% if member %}
+            <li><a href="/events/myevents">My events</a></li>
+            <li><a href="/events/create">Create event</a></li>
+            {% endif %}
             <li><a href="/accounts/password/change">Change password</a></li>
+
         </ul>
         {% else %}{% if member %}
         <ul>
             <p><b>Hello {{user}}!</b><br/><i>Member</i></p>
             <li><a href="/emergencies/overview">Emergencies</a></li>
-            <li><a href="/events/overview">My events</a></li>
+            <li><a href="/events/myevents">My events</a></li>
             <li><a href="/events/create">Create event</a></li>
             <li><a href="/accounts/password/change">Change password</a></li>
         </ul>
@@ -75,7 +80,7 @@ Released   : 20100729
         <ul>
             <p><b>Hello {{user}}!</b><br/><i>Volunteer</i></p>
             <li><a href="/emergencies/overview">Emergencies</a></li>
-            <li><a href="/events/overview">Task</a></li>
+            <li><a href="/events/overview">Events</a></li>
             <li><a href="/accounts/password/change">Change password</a></li>
         </ul>
         {% else %}
