@@ -5,7 +5,7 @@ My events
 {% block content %}
 <ul>
     {% for eve in evs %}
-    <li><a href=/events/desc.html/?id={eve.pk}>{eve.name}</a></li>
+    <li><a href=/events/desc.html/?id={eve.pk}>{{eve.name}}</a></li>
     {% endfor %}
 </ul>
 {% endblock %}
